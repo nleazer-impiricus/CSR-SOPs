@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCP Sample & Rep Request SOP</title>
+<style>
+  :root {
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --blue-mid: #dbeafe;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* HEADER */
+  .hero {
+    text-align: center; padding: 48px 0 20px;
+  }
+  .hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .hero p { font-size: 17px; color: var(--gray-500); max-width: 560px; margin: 0 auto; }
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    background: var(--blue-light); color: var(--blue);
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* NAV BUBBLES */
+  .nav-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0 40px;
+  }
+  .nav-bubbles a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 50px;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+  }
+  .nav-bubbles a:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .nav-bubbles a .icon { font-size: 16px; }
+  .bubble-blue { background: var(--blue-light); color: var(--blue); border: 1.5px solid #93c5fd; }
+  .bubble-blue:hover { background: var(--blue); color: #fff; }
+  .bubble-green { background: var(--green-light); color: var(--green); border: 1.5px solid #86efac; }
+  .bubble-green:hover { background: var(--green); color: #fff; }
+  .bubble-amber { background: var(--amber-light); color: #92400e; border: 1.5px solid #fcd34d; }
+  .bubble-amber:hover { background: var(--amber); color: #fff; }
+  .bubble-purple { background: var(--purple-light); color: var(--purple); border: 1.5px solid #c4b5fd; }
+  .bubble-purple:hover { background: var(--purple); color: #fff; }
+  .bubble-red { background: var(--red-light); color: var(--red); border: 1.5px solid #fca5a5; }
+  .bubble-red:hover { background: var(--red); color: #fff; }
+  .bubble-teal { background: #f0fdfa; color: #0d9488; border: 1.5px solid #5eead4; }
+  .bubble-teal:hover { background: #0d9488; color: #fff; }
+  .bubble-indigo { background: #eef2ff; color: #4f46e5; border: 1.5px solid #a5b4fc; }
+  .bubble-indigo:hover { background: #4f46e5; color: #fff; }
+
+  /* SECTIONS */
+  section { margin-bottom: 48px; }
+  section > h2 {
+    font-size: 22px; font-weight: 700; margin-bottom: 20px;
+    padding-bottom: 10px; border-bottom: 2px solid var(--gray-200);
+    scroll-margin-top: 24px;
+  }
+
+  /* CARDS */
+  .card {
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 24px;
+    box-shadow: var(--shadow); margin-bottom: 16px;
+  }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .card p, .card li { font-size: 15px; color: var(--gray-700); }
+
+  /* STEP TRACKER */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex; gap: 20px; margin-bottom: 4px;
+    position: relative;
+  }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: var(--blue); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    margin-top: 2px;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute; left: 17px; top: 40px; bottom: -4px;
+    width: 2px; background: var(--gray-200);
+  }
+  .step-body { padding-bottom: 28px; flex: 1; }
+  .step-body h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .step-body p { font-size: 14px; color: var(--gray-700); }
+
+  /* DECISION DIAMOND */
+  .decision {
+    background: var(--amber-light); border: 2px solid #fbbf24;
+    border-radius: var(--radius); padding: 16px 20px;
+    margin: 12px 0; font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .decision .icon { font-size: 20px; flex-shrink: 0; }
+
+  .outcome-yes {
+    background: var(--green-light); border-left: 4px solid var(--green);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    margin: 8px 0; font-size: 14px;
+  }
+  .outcome-no {
+    background: var(--red-light); border-left: 4px solid var(--red);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    margin: 8px 0; font-size: 14px;
+  }
+
+  /* CALLOUTS */
+  .callout {
+    border-radius: var(--radius); padding: 16px 20px;
+    font-size: 14px; margin: 16px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .callout .icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .callout-blue { background: var(--blue-light); border: 1px solid #93c5fd; }
+  .callout-amber { background: var(--amber-light); border: 1px solid #fcd34d; }
+  .callout-green { background: var(--green-light); border: 1px solid #86efac; }
+  .callout-red { background: var(--red-light); border: 1px solid #fca5a5; }
+  .callout-purple { background: var(--purple-light); border: 1px solid #c4b5fd; }
+
+  /* CODE / PROMPT BLOCK */
+  .prompt-block {
+    background: var(--gray-900); color: #e5e7eb;
+    border-radius: var(--radius); padding: 20px 24px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px; line-height: 1.7;
+    position: relative;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 16px 0;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+  .prompt-block .copy-btn {
+    position: sticky; top: 0; float: right;
+    background: var(--gray-700); color: #fff; border: none;
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    transition: background 0.15s;
+    z-index: 2;
+  }
+  .prompt-block .copy-btn:hover { background: var(--blue); }
+
+  /* FLOWCHART */
+  .flowchart {
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 32px;
+    box-shadow: var(--shadow); margin: 20px 0;
+    overflow-x: auto;
+  }
+  .flow-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .flow-box {
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; text-align: center;
+    min-width: 180px; max-width: 260px;
+  }
+  .flow-start { background: var(--blue); color: #fff; border-radius: 24px; }
+  .flow-action { background: var(--blue-light); color: var(--blue); border: 1.5px solid #93c5fd; }
+  .flow-decision { background: var(--amber-light); color: #92400e; border: 1.5px solid #fbbf24; }
+  .flow-yes { background: var(--green-light); color: var(--green); border: 1.5px solid #86efac; }
+  .flow-no { background: var(--red-light); color: var(--red); border: 1.5px solid #fca5a5; }
+  .flow-end { background: var(--green); color: #fff; border-radius: 24px; }
+  .flow-arrow { color: var(--gray-300); font-size: 22px; font-weight: 700; flex-shrink: 0; }
+  .flow-arrow-down { text-align: center; color: var(--gray-300); font-size: 22px; font-weight: 700; }
+  .flow-branch {
+    display: flex; gap: 24px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .flow-branch-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
+
+  /* POSTING FORMAT */
+  .post-template {
+    background: #fff; border: 2px dashed var(--gray-300);
+    border-radius: var(--radius); padding: 20px 24px;
+    font-size: 14px; margin: 16px 0;
+  }
+  .post-template code {
+    display: block; background: var(--gray-100);
+    padding: 16px; border-radius: 8px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px; white-space: pre-wrap; line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0;
+  }
+  th {
+    background: var(--gray-100); font-weight: 600; text-align: left;
+    padding: 10px 14px; border-bottom: 2px solid var(--gray-200);
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
+
+  /* UTILITY */
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .tag-blue { background: var(--blue-light); color: var(--blue); }
+  .tag-green { background: var(--green-light); color: var(--green); }
+  .tag-amber { background: var(--amber-light); color: var(--amber); }
+  strong { font-weight: 600; }
+
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 6px; font-size: 14px; }
+
+  .mt-12 { margin-top: 12px; }
+  .mb-8 { margin-bottom: 8px; }
+  .text-sm { font-size: 13px; }
+  .text-muted { color: var(--gray-500); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 24px; }
+    .flow-branch { flex-direction: column; align-items: center; }
+    .flowchart { padding: 20px 16px; }
+    .nav-bubbles { gap: 8px; }
+    .nav-bubbles a { font-size: 13px; padding: 8px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">Standard Operating Procedure</div>
+    <h1>HCP Sample & Rep Request Lookup</h1>
+    <p>The step-by-step process for finding manufacturer sample programs, sales rep contacts, and MSL information for healthcare providers.</p>
+  </div>
+
+  <!-- NAV BUBBLES -->
+  <div class="nav-bubbles">
+    <a href="#flowchart" class="bubble-blue"><span class="icon">🗺️</span> Flowchart</a>
+    <a href="#sop" class="bubble-green"><span class="icon">📋</span> SOP Steps</a>
+    <a href="#perplexity" class="bubble-purple"><span class="icon">🤖</span> Perplexity Guide</a>
+    <a href="#prompt" class="bubble-indigo"><span class="icon">💬</span> Prompt Template</a>
+    <a href="#google" class="bubble-teal"><span class="icon">🔍</span> Google Tips</a>
+    <a href="#posting" class="bubble-amber"><span class="icon">📝</span> Posting Format</a>
+    <a href="#quickref" class="bubble-red"><span class="icon">⚡</span> Quick Reference</a>
+  </div>
+
+  <!-- ======================== FLOWCHART ======================== -->
+  <section id="flowchart">
+    <h2>Process Flowchart</h2>
+    <div class="flowchart">
+
+      <div class="flow-row">
+        <div class="flow-box flow-start">HCP Request Received</div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-action">Step 1: Search Zendesk KB</div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-decision">Found in KB?</div>
+      </div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Yes</div>
+          <div class="flow-box flow-yes">Follow KB process → Reply to HCP in Zendesk</div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--red);">✗ No</div>
+          <div class="flow-box flow-no">Continue to Step 2 ↓</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-action">Step 2: Search #concierge-call-center in Slack</div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-decision">Found in Slack?</div>
+      </div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Yes</div>
+          <div class="flow-box flow-yes">Follow that process → Reply to HCP in Zendesk</div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--red);">✗ No</div>
+          <div class="flow-box flow-no">Continue to Step 3 ↓</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-action" style="background:var(--purple-light);color:var(--purple);border-color:#c4b5fd;">Step 3: Run Perplexity Prompt</div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-decision">Perplexity found a result?</div>
+      </div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Yes</div>
+          <div class="flow-box flow-yes" style="max-width:300px;">Verify every link & claim manually → Continue to Step 5</div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--red);">✗ No</div>
+          <div class="flow-box flow-no">Continue to Step 4 ↓</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-action">Step 4: Manual Google Search (HCP site focus)</div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-decision">Found official manufacturer info?</div>
+      </div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Yes</div>
+          <div class="flow-box flow-yes">Continue to Step 5 ↓</div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--red);">✗ No</div>
+          <div class="flow-box flow-no">Post to Slack — flag for help</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-action" style="background:#fef9c3;color:#854d0e;border-color:#fde047;">Step 5: Post to #concierge-call-center for Coordinator Approval</div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-box flow-decision">Coordinator Approved?</div>
+      </div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Approved</div>
+          <div class="flow-box flow-end">Reply to HCP in Zendesk</div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--amber);">↻ Revisions</div>
+          <div class="flow-box flow-no" style="background:var(--amber-light);color:#92400e;border-color:#fbbf24;">Revise per Coordinator feedback → Resubmit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== SOP STEPS ======================== -->
+  <section id="sop">
+    <h2>SOP — Detailed Steps</h2>
+
+    <div class="card">
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-body">
+            <h4>Search the Zendesk Knowledge Base</h4>
+            <p>Open Zendesk and search for the drug name. Use both brand and generic names if you know them. Look for existing articles or processes.</p>
+            <div class="decision">
+              <span class="icon">🔀</span>
+              <span>Did you find an existing KB article for this drug?</span>
+            </div>
+            <div class="outcome-yes"><strong>Yes →</strong> Follow the documented process and reply to the HCP in their Zendesk ticket. You're done!</div>
+            <div class="outcome-no"><strong>No →</strong> Continue to Step 2.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-body">
+            <h4>Search <code>#concierge-call-center</code> in Slack</h4>
+            <p>Use Slack search within the <strong>#concierge-call-center</strong> channel. Search the drug name — someone may have already researched this. Check for Coordinator-approved answers.</p>
+            <div class="decision">
+              <span class="icon">🔀</span>
+              <span>Did you find a previously approved process in Slack?</span>
+            </div>
+            <div class="outcome-yes"><strong>Yes →</strong> Follow that process and reply to the HCP in Zendesk. You're done!</div>
+            <div class="outcome-no"><strong>No →</strong> Continue to Step 3.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-body">
+            <h4>Run the Perplexity AI Prompt</h4>
+            <p>Open Perplexity and use the saved prompt template. Type <code>/samples [drug name]</code> to run it. Perplexity will search multiple sources and return a structured answer with links.</p>
+            <div class="callout callout-red">
+              <span class="icon">⚠️</span>
+              <div><strong>You must verify everything Perplexity returns.</strong> AI can hallucinate links, phone numbers, and processes. Every link must be clicked. Every phone number must be confirmed on the manufacturer's website. Never send unverified AI output to an HCP.</div>
+            </div>
+            <div class="decision">
+              <span class="icon">🔀</span>
+              <span>Did Perplexity return useful results that you were able to verify?</span>
+            </div>
+            <div class="outcome-yes"><strong>Yes →</strong> Skip to Step 5 (Coordinator Approval).</div>
+            <div class="outcome-no"><strong>No / Couldn't verify →</strong> Continue to Step 4.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-body">
+            <h4>Manual Google Search — HCP Site Focus</h4>
+            <p>Search Google to find the official manufacturer website for this drug. Focus on the <strong>Healthcare Professional (HCP) version</strong> of the site — not the patient-facing site.</p>
+            <div class="callout callout-blue">
+              <span class="icon">🔍</span>
+              <div>
+                <strong>How to find the HCP site:</strong><br>
+                Look for URLs containing <code>/hcp</code>, <code>/professional</code>, <code>/medical</code>, or subdomains like <code>hcp.drugname.com</code>. Look for a link or toggle that says "For Healthcare Professionals" on the patient site. See the <a href="#google">Google Tips</a> section for search shortcuts.
+              </div>
+            </div>
+            <p class="mt-12">Once on the HCP site, look for any of these:</p>
+            <ul>
+              <li>Sample request forms or portals</li>
+              <li>"Request a Rep" or "Contact a Representative" pages</li>
+              <li>Phone numbers for HCP/medical inquiries</li>
+              <li>Demo device or trainer request forms</li>
+              <li>Patient start / bridge program info</li>
+            </ul>
+            <div class="decision">
+              <span class="icon">🔀</span>
+              <span>Did you find official manufacturer information?</span>
+            </div>
+            <div class="outcome-yes"><strong>Yes →</strong> Continue to Step 5.</div>
+            <div class="outcome-no"><strong>No →</strong> Post to <strong>#concierge-call-center</strong> and flag it for help from the team. Include what you've already tried.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-body">
+            <h4>Post to <code>#concierge-call-center</code> for Coordinator Approval</h4>
+            <p>Since this is a <strong>new process</strong> (not already in the KB), you must get Coordinator approval before sending anything to the HCP. Post your findings using the <a href="#posting">required format</a>.</p>
+            <div class="callout callout-amber">
+              <span class="icon">⏳</span>
+              <div><strong>Do not reply to the HCP until a Coordinator approves your findings.</strong> If you're unsure about anything, say so in your post — the Coordinator or another team member can help.</div>
+            </div>
+            <div class="decision">
+              <span class="icon">🔀</span>
+              <span>Coordinator response?</span>
+            </div>
+            <div class="outcome-yes"><strong>Approved →</strong> Reply to the HCP in their Zendesk ticket with the approved information.</div>
+            <div class="outcome-no"><strong>Revisions requested →</strong> Make changes per Coordinator feedback and resubmit in Slack.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== PERPLEXITY GUIDE ======================== -->
+  <section id="perplexity">
+    <h2>Perplexity AI — What It Is & How to Use It</h2>
+
+    <div class="card">
+      <h3>What is Perplexity?</h3>
+      <p>Perplexity is an AI-powered search engine. Unlike ChatGPT (which generates answers from memory), Perplexity <strong>actually searches the internet in real-time</strong> and shows you the sources it found. Think of it like Google, but instead of giving you a list of blue links, it reads the pages for you and writes a summary with citations.</p>
+    </div>
+
+    <div class="card">
+      <h3>Why are we using it?</h3>
+      <p>For our use case — finding manufacturer sample programs, rep contacts, and HCP resources — Perplexity is helpful because it can search multiple sites at once and pull together information that would take several Google searches to find manually. The prompt template we've built tells Perplexity exactly what to look for and how to structure its answer.</p>
+    </div>
+
+    <div class="card" style="border-color: #fca5a5;">
+      <h3 style="color: var(--red);">The Critical Rule: Always Verify</h3>
+      <p>Perplexity (and all AI tools) can and will make mistakes. It may return links that don't exist, phone numbers that are wrong, or confidently describe programs that aren't real. <strong>You are responsible for verifying every piece of information before it goes to an HCP.</strong></p>
+      <div class="callout callout-red">
+        <span class="icon">🚫</span>
+        <div>
+          <strong>Never copy-paste Perplexity's output directly to an HCP.</strong> Always click every link, confirm every phone number on the manufacturer's actual website, and verify the process exists.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Getting Started (One-Time Setup)</h3>
+      <ol>
+        <li>Go to <strong>perplexity.ai</strong> and create a free account.</li>
+        <li>Once signed in, you'll see the search bar — this is where you'll run prompts.</li>
+        <li>Save the prompt from the <a href="#prompt">Prompt Template</a> section below as a Perplexity template so you can reuse it quickly.</li>
+        <li>To save a template: click the <strong>"Library"</strong> icon in the left sidebar → <strong>"Prompts"</strong> → <strong>"Create Prompt"</strong> → paste the prompt → set a shortcut like <code>/samples</code>.</li>
+        <li>Now anytime you need it, just type <code>/samples</code> in the search bar and fill in the drug name.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Running a Search</h3>
+      <ol>
+        <li>Open Perplexity and click the search bar.</li>
+        <li>Type <code>/samples</code> — your saved template will appear. Select it.</li>
+        <li>Replace <code>[drug name]</code> with the medication you're researching.</li>
+        <li>Press Enter. Perplexity will search the web and return a structured answer.</li>
+        <li>Review the answer — check each cited source by clicking the numbered references.</li>
+        <li><strong>Verify every link and claim</strong> before using anything from the results.</li>
+      </ol>
+    </div>
+
+    <div class="callout callout-blue">
+      <span class="icon">💡</span>
+      <div><strong>Tip:</strong> If Perplexity's first answer is incomplete, you can ask follow-up questions in the same thread — for example: <em>"Can you also check for a demo trainer or device request form?"</em> or <em>"What is the HCP phone number for [manufacturer]?"</em></div>
+    </div>
+  </section>
+
+  <!-- ======================== PROMPT TEMPLATE ======================== -->
+  <section id="prompt">
+    <h2>Perplexity Prompt Template</h2>
+    <p>Copy this entire prompt and save it as a Perplexity template with the shortcut <code>/samples</code>. When you use it, replace <code>[Drug Name]</code> with the medication you're researching.</p>
+
+    <div class="prompt-block" id="prompt-text"><button class="copy-btn" onclick="copyPrompt()">Copy</button>SYSTEM ROLE
+You are a U.S.-based pharmaceutical commercial sampling research specialist.
+The user provides only a drug name. Operate under U.S. market assumptions unless otherwise stated.
+
+Your mandate is to verify whether licensed U.S. healthcare professionals (HCPs) can obtain official manufacturer samples, demo kits/trainers, rep visits, bridge programs, phone/fax requests, or chatbot-routed access. Identify the official access pathway and confirm the responsible commercial entity.
+
+**PRIORITY ORDER (MANDATORY)**: Samples > Demo Kits > Reps > Bridge Programs > Savings Cards
+
+Prioritize accuracy over completeness. Base all conclusions only on verifiable manufacturer, HCP, or FDA sources.
+
+HCP SITE PRIORITIZATION RULE (MANDATORY OVERRIDE)
+Weigh HCP‑specific website content 10× higher than patient‑facing content.
+
+HCP site indicators: /hcp, /pro, /professional, /medical, /physician, hcp.* subdomain, or "For Healthcare Professionals" disclaimers.
+
+If both patient and HCP websites exist, ignore patient site entirely unless HCP version is absent.
+Weighting: HCP evidence = 100%; Patient content = 10% max.
+
+CORPORATE PORTAL HEURISTIC (CRITICAL OVERRIDE)
+MANDATORY corporate portals to check: MerckSamplePortal, MySampleCloset, KenvuePro, PfizerPro, NovoMedLink, AbbViePro, LillyTrade, AZMedical, JanssenPro, BauschHealth, Intra-Cellular, bdf.hcpsampling.com.
+
+If no sampling access found on drug-specific page, search these portals before concluding absence.
+
+WORKFLOW
+
+**PHASE 1A – SPECIALTY DETECTION (MANDATORY NEW STEP)**
+1. Run: "[Drug] indications FDA" OR "[Drug] HCP indications list"
+2. Extract all U.S. FDA-approved indications from official sources (drugHCP.com/indications, prescribing info)
+3. Generate specialty-specific queries:
+   - Dermatology: "[Drug] psoriasis OR dermatology HCP samples OR rep OR trainer"
+   - Gastroenterology: "[Drug] Crohn's OR ulcerative colitis HCP samples OR rep OR trainer"
+   - Rheumatology: "[Drug] psoriatic arthritis OR rheumatology HCP samples OR rep"
+   - Oncology: "[Drug] cancer OR oncology HCP samples OR rep"
+4. Run 1-2 top queries per detected specialty (max 3 total specialty queries)
+
+**PHASE 1 – EXPANDED EVIDENCE SEARCH (Enhanced)**
+Run these searches (quotation marks mandatory):
+"[Drug] HCP sample request"
+"[Drug] demo trainer HCP"
+"[Drug] request rep HCP"
+"[Drug] phone samples HCP"
+"[Drug] fax samples request"
+"[Drug] chatbot rep samples"
+"[Drug] MySampleCloset OR mysamplecloset.com"
+"[Drug] request trainer device"
+"[Manufacturer] HCP phone number"
+"[Drug] FDA label PDF"
+"[Drug] distributed by"
+
+**PHASE 1B – SITEMAP SCAN (MANDATORY NEW STEP)**
+Run: "[Drug] HCP site-map" OR "[Drug] HCP sitemap"
+- Scan sitemaps from top HCP domain (e.g., skyrizihcp.com/site-map)
+- Flag ALL paths matching:
+  - /dermatology, /gastroenterology, /rheumatology, /oncology
+  - /contact-a-rep, /request-a-rep, /request-rep(resentative)
+  - /request-samples, /samples, /sample-closet
+  - /hcp/trainer, /request-trainer, trainer-device
+- Prioritize ALL flagged URLs for Phase 2 deep scan
+
+Review top 3 pages per search. Retain only official manufacturer/HCP/government sources (.com, .hcp, .gov).
+
+**PHASE 2 – HCP PORTAL DEEP SCAN + PHONE/CHAT EXTRACT (Updated)**
+Visit corporate portals + drug HCP sites. Navigate **PER SPECIALTY**:
+Main HCP → [Dermatology/Gastroenterology/Rheumatology/Oncology] → Resources/Support → Samples/Demo/Getting Started → Contact Rep → Indication subpages (/psoriasis, /crohns, /uc, /pSa)
+
+Extract from ALL pages:
+- Phone/fax numbers (especially 800-numbers with NPI/practice fields)
+- Chatbot domains/widgets
+- Demo trainer forms (/trainer, "practice device", "request trainer")
+- Bridge programs (/withme, patient-start, holdover)
+
+Mandatory URL patterns to flag:
+URL Pattern | Flag As | Evidence Grade
+---|---|---
+/request-samples or /samples.html | Sample Portal | A
+/sample-closet or mysamplecloset.com | Sample Portal | A
+/hcp/trainer or request-trainer | Demo Trainer | A
+bdf.hcpsampling.com | Sample Portal | A
+kenvuepro.com | Sample Portal | A
+mercksampleportal.com | Sample Portal | A
+/chat or live-chat | Chatbot Rep Routing | B
+/getting-started or /getting-patients-started | Starter Resources | B
+/request-a-rep(resentative)? OR /contact-a-rep | Rep Request | C
+
+CHATBOT PROTOCOL: Test prompt "HCP requesting [Drug] samples/rep/demo trainer"
+
+**PHASE 3 – REP/DEMO/BRIDGE HEURISTIC**
+Grade A: Direct sample/demo trainer ordering (MySampleCloset, /trainer forms)
+Grade B: Phone/fax sample requests, chatbots routing to reps, bridge programs
+Grade C: Rep request forms mentioning samples/resources
+Grade D: Rep request forms only
+Grade E: No evidence found
+
+**PHASE 4 – Extract Verifiable Facts**
+Record: Portal URLs, phone/fax numbers, chatbot domains, demo trainer links, bridge eligibility, sample limits, follow-up requirements.
+
+**PHASE 5 – Analysis & Determination**
+Evidence Grades:
+A = Explicit sample/demo trainer ordering
+B = Phone/chatbot/bridge with samples mentioned
+C = Rep form + samples reference
+D = Rep form only
+E = No evidence
+
+Confidence Scoring: Start 100% → deductions for login barriers (-15%), phone-only (-10%), rep dependency (-20%).
+
+**PHASE 6 – Structured Output Generation**
+
+[DRUG ANALYZED]: [DRUG NAME]
+
+BEST HCP ACCESS PATHWAY
+Drug Analyzed: [Drug Name]
+Pathway Type: [Sample Portal/Demo Trainer/Rep Request/Phone-Fax/Bridge/Chatbot]
+Operated By: [Company Name]
+Direct Link/Phone: https:// OR 800-XXX-XXXX
+Step-by-Step Process:
+1. [Gather HCP info]
+2. [Fill form/call/chat]
+3. [Follow-up/escalate if needed]
+What's Offered: [Samples/Demo Kit/Rep Visit/Bridge Program]
+Eligibility: [HCP/Practice/Specialty]
+Proof Snippet (≤25 words): "…."
+Last Verified: [Date]
+Confidence: XX% (🟢High/🟡Moderate/🔴Low)
+Evidence Grade: A/B/C/D/E
+
+OTHER CONFIRMED PATHWAYS
+Drug | Pathway Type | Operated By | Direct Link/Phone | Steps Summary | Grade
+---|---|---|---|---|---
+
+DRUG CLASSIFICATION
+Drug: [Drug Name] | Brand/Generic | Confidence: XX% (🟢/🟡/🔴)
+
+U.S. COMMERCIAL ENTITIES
+Primary Contact Entity: [Company] | Role: [Distributor/Marketer] | Source: [URL]
+
+COMMERCIAL CONTACT OPTIONS
+Drug | Type | URL/Phone
+---|---|---
+[Drug] | Phone Request | 800-XXX-XXXX
+[Drug] | Chatbot | https://chat.domain.com
+[Drug] | Rep Form | https://
+
+FINAL DETERMINATION
+Result: ✅ Confirmed / ❌ No program found / ⚠️ Insufficient evidence
+Overall Confidence: XX% (🟢/🟡/🔴)
+Structural Risk Flag: 🟢/🟡/🔴
+Risk Justification: [1-2 sentences]
+
+LINKING & VALIDATION RULES
+- All links must begin with https://
+- Accept only manufacturer/HCP domains
+- Login portals: "Accessible via HCP login"
+- Cross-check WHOIS/footer branding
+- Eliminate .org/.net/aggregators
+
+INFERENCE PROHIBITION
+Never infer from competitors/analogs. Confirm only explicit manufacturer/HCP sources.</div>
+  </section>
+
+  <!-- ======================== GOOGLE TIPS ======================== -->
+  <section id="google">
+    <h2>Google Search Tips — Finding HCP Sites</h2>
+
+    <div class="card">
+      <h3>Recommended Search Queries</h3>
+      <p>When you need to manually search Google, these are the most effective queries to find what you're looking for. Replace <code>[Drug]</code> with the medication name.</p>
+
+      <table>
+        <thead>
+          <tr><th>What You're Looking For</th><th>Google Search Query</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>HCP website for the drug</td><td><code>[Drug] HCP site</code> or <code>[Drug] for healthcare professionals</code></td></tr>
+          <tr><td>Sample request information</td><td><code>[Drug] HCP samples request</code></td></tr>
+          <tr><td>Rep contact / request form</td><td><code>[Drug] request a rep</code> or <code>[Drug] contact representative</code></td></tr>
+          <tr><td>Manufacturer medical info line</td><td><code>[Drug] manufacturer HCP phone number</code></td></tr>
+          <tr><td>Who manufactures/distributes it</td><td><code>[Drug] prescribing information distributed by</code></td></tr>
+          <tr><td>Demo/trainer device</td><td><code>[Drug] demo trainer device HCP</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>How to Identify the HCP Version of a Site</h3>
+      <p>Most manufacturer drug websites have two versions — one for patients and one for healthcare professionals. You always want the HCP version. Here's how to spot it:</p>
+      <ul>
+        <li><strong>URL clues:</strong> Look for <code>/hcp</code>, <code>/pro</code>, <code>/professional</code>, <code>/medical</code>, or <code>/physician</code> in the URL. Some use subdomains like <code>hcp.drugname.com</code>.</li>
+        <li><strong>Site toggle:</strong> Many patient sites have a small link or button in the header that says "For Healthcare Professionals" or "HCP Site" — click that.</li>
+        <li><strong>Confirmation gate:</strong> HCP sites often ask you to confirm you're a licensed healthcare professional before entering. That's a good sign you're in the right place.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>What to Look For on the HCP Site</h3>
+      <p>Once you're on the HCP site, navigate to these areas:</p>
+      <ul>
+        <li><strong>Resources / Support section:</strong> Sample request forms, starter kits, bridge programs</li>
+        <li><strong>Contact / Request a Rep:</strong> Forms to request a sales representative visit</li>
+        <li><strong>Getting Started / Getting Patients Started:</strong> Often contains sample info, onboarding materials</li>
+        <li><strong>Footer links:</strong> Phone numbers for medical information, often an 800 number</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-green">
+      <span class="icon">✅</span>
+      <div><strong>Trust only official manufacturer domains.</strong> If you find info on a third-party site, forum, or aggregator, go to the manufacturer's actual website to confirm it. Only official sources are acceptable.</div>
+    </div>
+  </section>
+
+  <!-- ======================== POSTING FORMAT ======================== -->
+  <section id="posting">
+    <h2>Slack Posting Format</h2>
+    <p>When posting a <strong>new</strong> process to <strong>#concierge-call-center</strong> for Coordinator approval, use this format:</p>
+
+    <div class="post-template">
+      <strong>Copy and fill in this template:</strong>
+      <code id="slack-template">🔎 NEW PROCESS — [Drug Name]
+Ticket: #[Zendesk Ticket Number]
+
+What I found:
+[Brief description of the process/program]
+
+Source link(s):
+[Paste the URL(s) here]
+
+Supporting evidence:
+[Why I believe this is correct — e.g. "Found on the official HCP site at drugnamehcp.com, under Resources > Request Samples. Page confirms HCPs can request samples with NPI number."]
+
+Needs Coordinator approval before I reply to the HCP.</code>
+      <br>
+      <button onclick="copySlack()" style="margin-top:12px;background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Copy Template</button>
+    </div>
+
+    <div class="callout callout-amber">
+      <span class="icon">📌</span>
+      <div><strong>Remember:</strong> Every new process that isn't already in the Zendesk KB must be approved by a Coordinator before you send it to the HCP. This protects both you and the HCP.</div>
+    </div>
+  </section>
+
+  <!-- ======================== QUICK REFERENCE ======================== -->
+  <section id="quickref">
+    <h2>Quick Reference</h2>
+
+    <div class="card">
+      <h3>Lookup Order — Always Follow This Sequence</h3>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Step</th><th>Tool</th><th>If Found</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Check existing processes</td><td>Zendesk KB</td><td>Use it → Reply to HCP</td></tr>
+          <tr><td>2</td><td>Check past research</td><td>Slack #concierge-call-center</td><td>Use it → Reply to HCP</td></tr>
+          <tr><td>3</td><td>AI-assisted search</td><td>Perplexity (template)</td><td>Verify → Step 5</td></tr>
+          <tr><td>4</td><td>Manual search</td><td>Google (HCP sites)</td><td>Verify → Step 5</td></tr>
+          <tr><td>5</td><td>Get approval</td><td>Slack post to Coordinator</td><td>Approved → Reply to HCP</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Key Rules</h3>
+      <ul>
+        <li><strong>Always verify AI output</strong> — click every link, confirm every phone number on the official site.</li>
+        <li><strong>HCP sites over patient sites</strong> — always look for the healthcare professional version.</li>
+        <li><strong>Official sources only</strong> — manufacturer websites, FDA.gov, official HCP portals.</li>
+        <li><strong>New processes need Coordinator approval</strong> — post to Slack before replying to the HCP.</li>
+        <li><strong>Include your evidence</strong> — when posting to Slack, explain <em>why</em> you believe the source is correct.</li>
+        <li><strong>When in doubt, flag it</strong> — post to #concierge-call-center and ask for help.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-color: #93c5fd;">
+      <h3>Helpful Bookmarks</h3>
+      <table>
+        <thead>
+          <tr><th>Resource</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Knowledge Base</td><td>Zendesk (internal)</td></tr>
+          <tr><td>Team Q&A Channel</td><td>Slack → #concierge-call-center</td></tr>
+          <tr><td>AI Search Tool</td><td>perplexity.ai (free account)</td></tr>
+          <tr><td>FDA Drug Labels</td><td>dailymed.nlm.nih.gov</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<script>
+function copyPrompt() {
+  const el = document.getElementById('prompt-text');
+  const btn = el.querySelector('.copy-btn');
+  const btnText = btn.textContent;
+  const fullText = el.textContent.replace(btnText, '').trim();
+  navigator.clipboard.writeText(fullText).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.background = '#16a34a';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; }, 2000);
+  });
+}
+
+function copySlack() {
+  const el = document.getElementById('slack-template');
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#16a34a';
+    setTimeout(() => { btn.textContent = 'Copy Template'; btn.style.background = ''; }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
