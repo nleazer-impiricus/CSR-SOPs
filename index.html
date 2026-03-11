@@ -193,8 +193,22 @@
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
     position: sticky; top: 0; z-index: 10;
-    background: var(--gray-50); padding: 12px 0 12px;
-    border-bottom: 1px solid var(--gray-200);
+    padding: 14px 20px; border-radius: var(--radius);
+    border: 1.5px solid var(--gray-200);
+    background: #fff;
+    box-shadow: var(--shadow-md);
+    transition: border-color 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+  }
+  .checklist-header.state-empty {
+    background: #fff; border-color: var(--gray-200);
+  }
+  .checklist-header.state-progress {
+    background: var(--blue-light); border-color: #93c5fd;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+  }
+  .checklist-header.state-complete {
+    background: var(--green-light); border-color: #86efac;
+    box-shadow: 0 4px 12px rgba(22,163,74,0.12);
   }
   .checklist-progress {
     display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px;
@@ -1153,9 +1167,12 @@ function updateProgress() {
   var banner = document.getElementById('cl-banner');
   bar.style.width = pct + '%';
   text.textContent = done + ' / ' + total;
-  if (pct === 100) { bar.classList.add('complete'); text.classList.add('complete'); banner.classList.add('show'); }
-  else { bar.classList.remove('complete'); text.classList.remove('complete'); banner.classList.remove('show'); }
-  document.querySelectorAll('.cl-section').forEach(function(sec) {
+  var header = document.querySelector('.checklist-header');
+  header.classList.remove('state-empty', 'state-progress', 'state-complete');
+  if (pct === 100) { bar.classList.add('complete'); text.classList.add('complete'); banner.classList.add('show'); header.classList.add('state-complete'); }
+  else if (done > 0) { bar.classList.remove('complete'); text.classList.remove('complete'); banner.classList.remove('show'); header.classList.add('state-progress'); }
+  else { bar.classList.remove('complete'); text.classList.remove('complete'); banner.classList.remove('show'); header.classList.add('state-empty'); }
+  document.querySelectorAll('#checklist .cl-section').forEach(function(sec) {
     var items = sec.querySelectorAll('.cl-item');
     var ci = sec.querySelectorAll('.cl-item.checked');
     var badge = sec.querySelector('.cl-section-badge');
