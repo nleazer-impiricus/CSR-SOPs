@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCP Request SOP — Assist Version</title>
+<style>
+  :root {
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+    color: var(--gray-900); background: var(--gray-50);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px 80px; }
+  .hero { text-align: center; padding: 48px 0 20px; }
+  .hero h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .hero p { font-size: 16px; color: var(--gray-500); max-width: 520px; margin: 0 auto; }
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    background: var(--green-light); color: var(--green);
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border: 1.5px solid #86efac;
+  }
+  .nav-bubbles {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 10px; padding: 20px 0 40px;
+  }
+  .nav-bubbles button {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 14px; font-weight: 600;
+    padding: 10px 18px; border-radius: 50px;
+    cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow);
+    border: none;
+  }
+  .nav-bubbles button:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .bubble-blue { background: var(--blue-light); color: var(--blue); border: 1.5px solid #93c5fd !important; }
+  .bubble-blue:hover, .bubble-blue.active { background: var(--blue); color: #fff; }
+  .bubble-green { background: var(--green-light); color: var(--green); border: 1.5px solid #86efac !important; }
+  .bubble-green:hover, .bubble-green.active { background: var(--green); color: #fff; }
+  .bubble-amber { background: var(--amber-light); color: #92400e; border: 1.5px solid #fcd34d !important; }
+  .bubble-amber:hover, .bubble-amber.active { background: var(--amber); color: #fff; }
+  .bubble-red { background: var(--red-light); color: var(--red); border: 1.5px solid #fca5a5 !important; }
+  .bubble-red:hover, .bubble-red.active { background: var(--red); color: #fff; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  section { margin-bottom: 48px; }
+  section > h2 { font-size: 22px; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gray-200); }
+  .card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .card p, .card li { font-size: 15px; color: var(--gray-700); }
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 20px; margin-bottom: 4px; position: relative; }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    flex-shrink: 0; width: 36px; height: 36px;
+    background: var(--blue); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; margin-top: 2px;
+  }
+  .step:not(:last-child)::after {
+    content: ''; position: absolute; left: 17px; top: 40px; bottom: -4px;
+    width: 2px; background: var(--gray-200);
+  }
+  .step-body { padding-bottom: 28px; flex: 1; }
+  .step-body h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .step-body p { font-size: 14px; color: var(--gray-700); }
+  .decision { background: var(--amber-light); border: 2px solid #fbbf24; border-radius: var(--radius); padding: 16px 20px; margin: 12px 0; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .decision .icon { font-size: 20px; flex-shrink: 0; }
+  .outcome-yes { background: var(--green-light); border-left: 4px solid var(--green); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 8px 0; font-size: 14px; }
+  .outcome-no { background: var(--red-light); border-left: 4px solid var(--red); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 8px 0; font-size: 14px; }
+  .callout { border-radius: var(--radius); padding: 16px 20px; font-size: 14px; margin: 16px 0; display: flex; gap: 12px; align-items: flex-start; }
+  .callout .icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .callout-blue { background: var(--blue-light); border: 1px solid #93c5fd; }
+  .callout-amber { background: var(--amber-light); border: 1px solid #fcd34d; }
+  .callout-green { background: var(--green-light); border: 1px solid #86efac; }
+  .callout-red { background: var(--red-light); border: 1px solid #fca5a5; }
+  .flowchart { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 32px; box-shadow: var(--shadow); margin: 20px 0; overflow-x: auto; }
+  .flow-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .flow-box { padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; min-width: 180px; max-width: 300px; }
+  .flow-start { background: var(--blue); color: #fff; border-radius: 24px; }
+  .flow-action { background: var(--blue-light); color: var(--blue); border: 1.5px solid #93c5fd; }
+  .flow-decision { background: var(--amber-light); color: #92400e; border: 1.5px solid #fbbf24; }
+  .flow-yes { background: var(--green-light); color: var(--green); border: 1.5px solid #86efac; }
+  .flow-no { background: var(--red-light); color: var(--red); border: 1.5px solid #fca5a5; }
+  .flow-end { background: var(--green); color: #fff; border-radius: 24px; }
+  .flow-escalate { background: var(--amber-light); color: #92400e; border: 1.5px solid #fbbf24; border-radius: 24px; }
+  .flow-arrow-down { text-align: center; color: var(--gray-300); font-size: 22px; font-weight: 700; }
+  .flow-branch { display: flex; gap: 24px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
+  .flow-branch-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
+  .post-template { background: #fff; border: 2px dashed var(--gray-300); border-radius: var(--radius); padding: 20px 24px; font-size: 14px; margin: 16px 0; }
+  .post-template code { display: block; background: var(--gray-100); padding: 16px; border-radius: 8px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13px; white-space: pre-wrap; line-height: 1.6; margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+  th { background: var(--gray-100); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--gray-200); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
+  strong { font-weight: 600; }
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 6px; font-size: 14px; }
+  .mt-12 { margin-top: 12px; }
+  /* CHECKLIST */
+  .checklist-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+    position: sticky; top: 0; z-index: 10;
+    padding: 14px 20px; border-radius: var(--radius);
+    border: 1.5px solid var(--gray-200); background: #fff;
+    box-shadow: var(--shadow-md);
+    transition: border-color 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+  }
+  .checklist-header.state-empty { background: #fff; border-color: var(--gray-200); }
+  .checklist-header.state-progress { background: var(--blue-light); border-color: #93c5fd; box-shadow: 0 4px 12px rgba(37,99,235,0.1); }
+  .checklist-header.state-complete { background: var(--green-light); border-color: #86efac; box-shadow: 0 4px 12px rgba(22,163,74,0.12); }
+  .checklist-progress { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }
+  .progress-bar-track { flex: 1; height: 10px; background: var(--gray-200); border-radius: 99px; overflow: hidden; min-width: 120px; }
+  .progress-bar-fill { height: 100%; background: var(--blue); border-radius: 99px; transition: width 0.4s ease, background 0.4s ease; }
+  .progress-bar-fill.complete { background: var(--green); }
+  .progress-text { font-size: 14px; font-weight: 600; color: var(--gray-500); white-space: nowrap; }
+  .progress-text.complete { color: var(--green); }
+  .reset-btn { display: inline-flex; align-items: center; gap: 6px; background: #fff; color: var(--red); border: 1.5px solid #fca5a5; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .reset-btn:hover { background: var(--red); color: #fff; }
+  .cl-section { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+  .cl-section-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.15s; }
+  .cl-section-header:hover { background: var(--gray-50); }
+  .cl-section-num { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; transition: background 0.3s; }
+  .cl-section-num.done { background: var(--green); }
+  .cl-section-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .cl-section-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+  .cl-badge-pending { background: var(--gray-100); color: var(--gray-500); }
+  .cl-badge-partial { background: var(--amber-light); color: var(--amber); }
+  .cl-badge-done { background: var(--green-light); color: var(--green); }
+  .cl-section-chevron { font-size: 18px; color: var(--gray-300); transition: transform 0.2s; }
+  .cl-section.open .cl-section-chevron { transform: rotate(180deg); }
+  .cl-section-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .cl-section.open .cl-section-body { max-height: 600px; }
+  .cl-section-inner { padding: 0 20px 20px; }
+  .cl-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); cursor: pointer; user-select: none; }
+  .cl-item:last-child { border-bottom: none; }
+  .cl-item:hover .cl-checkbox { border-color: var(--blue); }
+  .cl-checkbox { width: 22px; height: 22px; border: 2px solid var(--gray-300); border-radius: 6px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 13px; color: transparent; }
+  .cl-item.checked .cl-checkbox { background: var(--green); border-color: var(--green); color: #fff; }
+  .cl-item-text { font-size: 14px; color: var(--gray-700); line-height: 1.5; }
+  .cl-item.checked .cl-item-text { color: var(--gray-500); text-decoration: line-through; text-decoration-color: var(--gray-300); }
+  .cl-item-text strong { color: var(--gray-900); font-weight: 600; }
+  .cl-item.checked .cl-item-text strong { color: var(--gray-500); }
+  .cl-note { background: var(--blue-light); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--blue); margin-top: 8px; display: flex; gap: 8px; align-items: flex-start; }
+  .cl-complete-banner { display: none; background: var(--green-light); border: 2px solid var(--green); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 20px; }
+  .cl-complete-banner.show { display: block; }
+  .cl-complete-banner .big-check { font-size: 40px; margin-bottom: 8px; }
+  .cl-complete-banner h3 { font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+  .cl-complete-banner p { font-size: 14px; color: var(--gray-700); }
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 24px; }
+    .flow-branch { flex-direction: column; align-items: center; }
+    .flowchart { padding: 20px 16px; }
+    .nav-bubbles { gap: 8px; }
+    .nav-bubbles button { font-size: 13px; padding: 8px 14px; }
+    .checklist-header { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+
+    <h1>HCP Request Lookup</h1>
+    <p>A simplified process for handling requests that already have documented answers — check the KB, check Slack, and escalate anything that isn't covered.</p>
+  </div>
+
+  <div class="nav-bubbles">
+    <button class="bubble-blue active" onclick="showTab('flowchart',this)"><span class="icon">🗺️</span> Flowchart</button>
+    <button class="bubble-green" onclick="showTab('sop',this)"><span class="icon">📋</span> SOP Steps</button>
+    <button class="bubble-red" onclick="showTab('checklist',this)"><span class="icon">✅</span> Checklist</button>
+    <button class="bubble-amber" onclick="showTab('posting',this)"><span class="icon">📝</span> Slack Posting Guide</button>
+  </div>
+
+  <!-- ======================== FLOWCHART ======================== -->
+  <div id="flowchart" class="tab-panel active">
+  <section>
+    <h2>Process Flowchart</h2>
+    <div class="flowchart">
+      <div class="flow-row"><div class="flow-box flow-start">HCP Request Received</div></div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row"><div class="flow-box flow-action">Step 1: Search Zendesk KB</div></div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row"><div class="flow-box flow-decision">Found in KB?</div></div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Yes</div>
+          <div class="flow-box flow-yes">Follow KB process → Reply to HCP in Zendesk</div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--red);">✗ No</div>
+          <div class="flow-box flow-no">Continue to Step 2 ↓</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row"><div class="flow-box flow-action">Step 2: Search #concierge-call-center in Slack</div></div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row"><div class="flow-box flow-decision">Found a Coordinator-approved answer?</div></div>
+      <div class="flow-arrow-down" style="margin-bottom:4px;">↓</div>
+      <div class="flow-branch">
+        <div>
+          <div class="flow-branch-label" style="color:var(--green);">✓ Yes</div>
+          <div class="flow-box flow-yes" style="max-width:300px;">Follow that process → Reply to HCP<br><strong style="color:#92400e;">⚠️ Flag KB gap to Coordinator</strong></div>
+        </div>
+        <div>
+          <div class="flow-branch-label" style="color:var(--red);">✗ No</div>
+          <div class="flow-box flow-no">Continue to Step 3 ↓</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+
+      <div class="flow-row"><div class="flow-box flow-escalate">Step 3: Escalate to Coordinator</div></div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row"><div class="flow-box" style="background:#fef9c3;color:#854d0e;border:1.5px solid #fde047;border-radius:10px;max-width:340px;">Post to #concierge-call-center — include drug name, ticket #, and what you searched</div></div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row"><div class="flow-box flow-end" style="max-width:300px;">Wait for Coordinator to advise → Follow their guidance</div></div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top: 20px;">
+      <span class="icon">💡</span>
+      <div><strong>Remember:</strong> Your job in this role is to handle requests that already have a documented answer. If neither the KB nor Slack has it — don't guess, don't search online. Flag it and let a Coordinator take it from there.</div>
+    </div>
+  </section>
+  </div>
+
+  <!-- ======================== SOP STEPS ======================== -->
+  <div id="sop" class="tab-panel">
+  <section>
+    <h2>SOP — Detailed Steps</h2>
+    <div class="card">
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-body">
+            <h4>Search the Zendesk Knowledge Base</h4>
+            <p>Open Zendesk and search for the drug name or topic. Try both the brand name and any generic name you know. Look through all matching articles for an existing documented process.</p>
+            <div class="callout callout-blue">
+              <span class="icon">🔍</span>
+              <div><strong>Search tips:</strong> Try different variations — e.g. "Mounjaro" and also "tirzepatide". If the first search doesn't return results, try shorter or different keywords before moving on.</div>
+            </div>
+            <div class="decision"><span class="icon">🔀</span><span>Did you find an existing KB article for this drug or request type?</span></div>
+            <div class="outcome-yes"><strong>Yes →</strong> Follow the documented process and reply to the HCP in their Zendesk ticket. You're done!</div>
+            <div class="outcome-no"><strong>No →</strong> Continue to Step 2.</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-body">
+            <h4>Search <code>#concierge-call-center</code> in Slack</h4>
+            <p>Use Slack's search to look for the drug name or topic within the <strong>#concierge-call-center</strong> channel. Someone on the team may have already researched this and gotten Coordinator approval. Look for posts where a Coordinator has responded with a green light or explicit approval.</p>
+            <div class="callout callout-amber">
+              <span class="icon">⚠️</span>
+              <div><strong>Only use answers that have been approved by a Coordinator.</strong> If you find a post from another CSR but there's no Coordinator approval on it, do not use it — treat it as if nothing was found and continue to Step 3.</div>
+            </div>
+            <div class="decision"><span class="icon">🔀</span><span>Did you find a Coordinator-approved answer in Slack?</span></div>
+            <div class="outcome-yes"><strong>Yes →</strong> Follow that process and reply to the HCP in Zendesk.</div>
+            <div class="callout callout-amber">
+              <span class="icon">📌</span>
+              <div><strong>KB Gap Flag:</strong> If you found an approved process in Slack but it's <em>not</em> in the Zendesk KB, let a Coordinator know so they can add it. Post in <strong>#concierge-call-center</strong>: <em>"Used Slack-approved process for [Drug Name] — not currently in KB. Flagging for KB addition."</em></div>
+            </div>
+            <div class="outcome-no"><strong>No →</strong> Continue to Step 3.</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-body">
+            <h4>Escalate to a Coordinator</h4>
+            <p>If you couldn't find the answer in either the KB or Slack, this request needs a Coordinator. Post to <strong>#concierge-call-center</strong> using the escalation template in the <strong>Slack Posting Guide</strong> tab.</p>
+            <div class="callout callout-red">
+              <span class="icon">🚫</span>
+              <div><strong>Do not search online, do not guess, and do not reply to the HCP with unverified information.</strong> In this role, anything outside the KB and Slack is outside your scope — flag it and let the Coordinator handle the research.</div>
+            </div>
+            <div class="callout callout-green">
+              <span class="icon">✅</span>
+              <div><strong>In your Slack post, include:</strong> the drug name, the Zendesk ticket number, and a note that you searched both the KB and Slack without finding a result. The more context you give, the faster the Coordinator can help.</div>
+            </div>
+            <p class="mt-12">Once you've posted, keep an eye on the channel and follow whatever guidance the Coordinator provides. Do not reply to the HCP until you've been given a clear answer to send.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <!-- ======================== CHECKLIST ======================== -->
+  <div id="checklist" class="tab-panel">
+  <section>
+    <h2>Request Checklist</h2>
+    <p style="color:var(--gray-500);font-size:15px;margin-bottom:20px;">Work through each section for every new request. Hit <strong>Reset</strong> to clear for the next one.</p>
+
+    <div class="cl-complete-banner" id="cl-banner">
+      <div class="big-check">🎉</div>
+      <h3>All Steps Complete!</h3>
+      <p>Great work. If you escalated to a Coordinator, keep an eye on Slack for their reply before responding to the HCP.</p>
+    </div>
+
+    <div class="checklist-header state-empty">
+      <div class="checklist-progress">
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="cl-bar" style="width:0%"></div></div>
+        <span class="progress-text" id="cl-progress-text">0 / 0</span>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist()">↺ Reset Checklist</button>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="cl-section open" data-section="1">
+      <div class="cl-section-header" onclick="toggleSection(this)">
+        <div class="cl-section-num">1</div>
+        <div class="cl-section-title">Zendesk Knowledge Base</div>
+        <span class="cl-section-badge cl-badge-pending">Not started</span>
+        <span class="cl-section-chevron">▾</span>
+      </div>
+      <div class="cl-section-body">
+        <div class="cl-section-inner">
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Searched Zendesk KB</strong> using the drug's brand name</div>
+          </div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Searched again with the generic name</strong> or alternate spelling if the first search had no results</div>
+          </div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Reviewed all matching articles</strong> for an existing process</div>
+          </div>
+          <div class="cl-note"><span class="icon">💡</span> Found something? Follow it and reply to the HCP — you're done! Nothing found? Continue to Step 2.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="cl-section" data-section="2">
+      <div class="cl-section-header" onclick="toggleSection(this)">
+        <div class="cl-section-num">2</div>
+        <div class="cl-section-title">Slack #concierge-call-center</div>
+        <span class="cl-section-badge cl-badge-pending">Not started</span>
+        <span class="cl-section-chevron">▾</span>
+      </div>
+      <div class="cl-section-body">
+        <div class="cl-section-inner">
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Searched #concierge-call-center</strong> in Slack for the drug or topic</div>
+          </div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Checked that any result has Coordinator approval</strong> — not just a post from another CSR</div>
+          </div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text">If found in Slack but not in KB: <strong>flagged the KB gap</strong> to a Coordinator</div>
+          </div>
+          <div class="cl-note"><span class="icon">💡</span> Found a Coordinator-approved answer? Follow it and reply to the HCP. Nothing found? Continue to Step 3.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="cl-section" data-section="3">
+      <div class="cl-section-header" onclick="toggleSection(this)">
+        <div class="cl-section-num" style="background:var(--amber);">3</div>
+        <div class="cl-section-title">Escalate to Coordinator</div>
+        <span class="cl-section-badge cl-badge-pending">Not started</span>
+        <span class="cl-section-chevron">▾</span>
+      </div>
+      <div class="cl-section-body">
+        <div class="cl-section-inner">
+          <div class="cl-note" style="background:#fffbeb;color:#92400e;border:1px solid #fcd34d;margin-top:0;margin-bottom:12px;"><span class="icon">📌</span> <strong>Only reach this step if neither KB nor Slack had an answer.</strong></div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Posted to #concierge-call-center</strong> using the escalation template</div>
+          </div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Included drug name, ticket number,</strong> and confirmation that both KB and Slack were already searched</div>
+          </div>
+          <div class="cl-item" onclick="toggleCheck(this)">
+            <div class="cl-checkbox">✓</div>
+            <div class="cl-item-text"><strong>Waiting for Coordinator guidance</strong> before replying to the HCP</div>
+          </div>
+          <div class="cl-note"><span class="icon">⏳</span> Do not reply to the HCP until a Coordinator has given you a clear answer to send.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  </div>
+
+  <!-- ======================== POSTING FORMAT ======================== -->
+  <div id="posting" class="tab-panel">
+  <section>
+    <h2>Slack Posting Guide</h2>
+
+    <p style="margin-bottom:20px;">There are two situations where you'll need to post to <strong>#concierge-call-center</strong>. Use the right template for each.</p>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:12px;">1. Escalating a request you couldn't find an answer for</h3>
+    <div class="post-template">
+      <strong>Copy and fill in this template:</strong>
+      <code id="escalate-template">🙋 ESCALATION — [Drug Name]
+Ticket: #[Zendesk Ticket Number]
+
+I searched the KB and #concierge-call-center but couldn't find an existing process for this request.
+
+What the HCP is asking:
+[Brief description of what they need — e.g. "HCP is asking how to request samples for Mounjaro"]
+
+Handing this over for Coordinator to advise. I haven't replied to the HCP yet.</code>
+      <br>
+      <button onclick="copyTemplate('escalate-template', this)" style="margin-top:12px;background:var(--amber);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Copy Template</button>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:12px;margin-top:28px;">2. Flagging a KB gap (found the answer in Slack but it's not in the KB)</h3>
+    <div class="post-template">
+      <strong>Copy and fill in this template:</strong>
+      <code id="kbgap-template">📋 KB GAP FLAG — [Drug Name]
+Ticket: #[Zendesk Ticket Number]
+
+I found a Coordinator-approved process for [Drug Name] in Slack (posted by [Name] on [Date]) but it's not currently in the Zendesk KB.
+
+I've used the Slack process to reply to the HCP.
+
+Flagging for KB addition so future agents can find it faster.</code>
+      <br>
+      <button onclick="copyTemplate('kbgap-template', this)" style="margin-top:12px;background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Copy Template</button>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:24px;">
+      <span class="icon">📌</span>
+      <div><strong>Key rule:</strong> Never reply to an HCP with information that isn't from the KB or a Coordinator-approved Slack post. When in doubt, escalate — there's no downside to flagging, but there is a real risk to sending incorrect information.</div>
+    </div>
+  </section>
+  </div>
+
+</div>
+
+<script>
+function showTab(tabId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-bubbles button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.nav-bubbles').offsetTop - 20, behavior: 'smooth' });
+}
+function copyTemplate(id, btn) {
+  var text = document.getElementById(id).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!'; btn.style.background = '#16a34a';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+  });
+}
+function toggleSection(header) { header.closest('.cl-section').classList.toggle('open'); }
+function toggleCheck(item) { item.classList.toggle('checked'); updateProgress(); }
+function updateProgress() {
+  var all = document.querySelectorAll('#checklist .cl-item');
+  var checked = document.querySelectorAll('#checklist .cl-item.checked');
+  var total = all.length, done = checked.length;
+  var pct = total ? Math.round((done / total) * 100) : 0;
+  var bar = document.getElementById('cl-bar');
+  var text = document.getElementById('cl-progress-text');
+  var banner = document.getElementById('cl-banner');
+  bar.style.width = pct + '%';
+  text.textContent = done + ' / ' + total;
+  var header = document.querySelector('.checklist-header');
+  header.classList.remove('state-empty', 'state-progress', 'state-complete');
+  if (pct === 100) { bar.classList.add('complete'); text.classList.add('complete'); banner.classList.add('show'); header.classList.add('state-complete'); }
+  else if (done > 0) { bar.classList.remove('complete'); text.classList.remove('complete'); banner.classList.remove('show'); header.classList.add('state-progress'); }
+  else { bar.classList.remove('complete'); text.classList.remove('complete'); banner.classList.remove('show'); header.classList.add('state-empty'); }
+  document.querySelectorAll('#checklist .cl-section').forEach(sec => {
+    var items = sec.querySelectorAll('.cl-item');
+    var ci = sec.querySelectorAll('.cl-item.checked');
+    var badge = sec.querySelector('.cl-section-badge');
+    var num = sec.querySelector('.cl-section-num');
+    if (!items.length) return;
+    if (!ci.length) { badge.className = 'cl-section-badge cl-badge-pending'; badge.textContent = 'Not started'; if (num) num.classList.remove('done'); }
+    else if (ci.length === items.length) { badge.className = 'cl-section-badge cl-badge-done'; badge.textContent = 'Complete'; if (num) num.classList.add('done'); }
+    else { badge.className = 'cl-section-badge cl-badge-partial'; badge.textContent = ci.length + '/' + items.length; if (num) num.classList.remove('done'); }
+  });
+}
+function resetChecklist() {
+  document.querySelectorAll('#checklist .cl-item.checked').forEach(i => i.classList.remove('checked'));
+  updateProgress();
+  document.getElementById('checklist').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+updateProgress();
+</script>
+</body>
+</html>
