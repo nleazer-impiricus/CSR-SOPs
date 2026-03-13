@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSR SOP Reference Hub</title>
+<style>
+  :root {
+    --blue:#2563eb;--blue-light:#eff6ff;--blue-mid:#dbeafe;
+    --teal:#0d9488;--teal-light:#f0fdfa;--teal-mid:#ccfbf1;
+    --green:#16a34a;--green-light:#f0fdf4;
+    --amber:#d97706;--amber-light:#fffbeb;
+    --red:#dc2626;--red-light:#fef2f2;
+    --purple:#7c3aed;--purple-light:#f5f3ff;
+    --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+    --gray-300:#d1d5db;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
+    --radius:12px;--shadow:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 12px rgba(0,0,0,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--gray-50);color:var(--gray-900);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .container{max-width:1000px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* NAV */
+  .nav{background:#fff;border-bottom:1px solid var(--gray-200);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow);}
+  .nav-brand{font-size:15px;font-weight:800;color:var(--gray-900);}
+  .nav-brand span{color:var(--gray-500);font-weight:400;}
+
+  /* HERO */
+  .hero{text-align:center;padding:44px 0 32px;}
+  .hero .badge{display:inline-block;font-size:11px;font-weight:700;background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-300);padding:4px 14px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+  .hero h1{font-size:30px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px;}
+  .hero p{color:var(--gray-500);font-size:15px;max-width:520px;margin:0 auto;}
+
+  /* SOP TOP-LEVEL TABS */
+  .sop-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;}
+  .sop-tab{padding:11px 22px;border-radius:50px;border:2px solid transparent;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .sop-tab-1{background:var(--blue-light);color:var(--blue);border-color:#93c5fd;}
+  .sop-tab-1:hover,.sop-tab-1.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .sop-tab-2{background:var(--teal-light);color:var(--teal);border-color:#5eead4;}
+  .sop-tab-2:hover,.sop-tab-2.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+
+  /* SOP PANELS */
+  .sop-panel{display:none;}
+  .sop-panel.active{display:block;}
+
+  /* SUB TABS (bubble style) */
+  .sub-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+  .sub-tab{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:9px 18px;border-radius:50px;cursor:pointer;border:1.5px solid;transition:all 0.18s;box-shadow:var(--shadow);}
+  .sub-tab:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+
+  /* Blue sub-tabs (SOP 1) */
+  .b-blue{background:var(--blue-light);color:var(--blue);border-color:#93c5fd;}
+  .b-blue:hover,.b-blue.active{background:var(--blue);color:#fff;}
+  .b-green{background:var(--green-light);color:var(--green);border-color:#86efac;}
+  .b-green:hover,.b-green.active{background:var(--green);color:#fff;}
+  .b-amber{background:var(--amber-light);color:#92400e;border-color:#fcd34d;}
+  .b-amber:hover,.b-amber.active{background:var(--amber);color:#fff;}
+  .b-purple{background:var(--purple-light);color:var(--purple);border-color:#c4b5fd;}
+  .b-purple:hover,.b-purple.active{background:var(--purple);color:#fff;}
+  .b-red{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+  .b-red:hover,.b-red.active{background:var(--red);color:#fff;}
+
+  /* Teal sub-tabs (SOP 2) */
+  .t-teal{background:var(--teal-light);color:var(--teal);border-color:#5eead4;}
+  .t-teal:hover,.t-teal.active{background:var(--teal);color:#fff;}
+  .t-blue{background:var(--blue-light);color:var(--blue);border-color:#93c5fd;}
+  .t-blue:hover,.t-blue.active{background:var(--blue);color:#fff;}
+  .t-amber{background:var(--amber-light);color:#92400e;border-color:#fcd34d;}
+  .t-amber:hover,.t-amber.active{background:var(--amber);color:#fff;}
+  .t-green{background:var(--green-light);color:var(--green);border-color:#86efac;}
+  .t-green:hover,.t-green.active{background:var(--green);color:#fff;}
+  .t-red{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+  .t-red:hover,.t-red.active{background:var(--red);color:#fff;}
+
+  .sub-panel{display:none;}
+  .sub-panel.active{display:block;}
+
+  /* SHARED LAYOUT */
+  .card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;}
+  .card h3{font-size:16px;font-weight:700;margin-bottom:10px;}
+  .card p,.card li{font-size:14px;color:var(--gray-700);line-height:1.7;}
+  ul,ol{padding-left:20px;margin:8px 0;}
+  li{margin-bottom:5px;}
+  strong{font-weight:700;}
+  code{background:var(--gray-100);padding:1px 6px;border-radius:4px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;}
+  section>h2{font-size:20px;font-weight:800;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--gray-200);}
+
+  /* CALLOUTS */
+  .callout{border-radius:10px;padding:14px 18px;font-size:13.5px;margin:14px 0;display:flex;gap:12px;align-items:flex-start;}
+  .callout .icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .callout-blue{background:var(--blue-light);border:1px solid #93c5fd;}
+  .callout-amber{background:var(--amber-light);border:1px solid #fcd34d;}
+  .callout-green{background:var(--green-light);border:1px solid #86efac;}
+  .callout-red{background:var(--red-light);border:1px solid #fca5a5;}
+  .callout-teal{background:var(--teal-light);border:1px solid #5eead4;}
+
+  /* STEPS */
+  .steps{counter-reset:step;}
+  .step{display:flex;gap:18px;margin-bottom:4px;position:relative;}
+  .step::before{counter-increment:step;content:counter(step);flex-shrink:0;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:2px;color:#fff;}
+  .steps-blue .step::before{background:var(--blue);}
+  .steps-teal .step::before{background:var(--teal);}
+  .step:not(:last-child)::after{content:'';position:absolute;left:16px;top:38px;bottom:-4px;width:2px;background:var(--gray-200);}
+  .step-body{padding-bottom:24px;flex:1;}
+  .step-body h4{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .step-body p,.step-body li{font-size:14px;color:var(--gray-700);}
+
+  /* DECISION / OUTCOME */
+  .decision{background:var(--amber-light);border:2px solid #fbbf24;border-radius:10px;padding:13px 17px;margin:12px 0;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;}
+  .outcome-yes{background:var(--green-light);border-left:4px solid var(--green);padding:11px 14px;border-radius:0 8px 8px 0;margin:7px 0;font-size:13.5px;}
+  .outcome-no{background:var(--red-light);border-left:4px solid var(--red);padding:11px 14px;border-radius:0 8px 8px 0;margin:7px 0;font-size:13.5px;}
+
+  /* FLOWCHART */
+  .flowchart{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);overflow-x:auto;}
+  .flow-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .flow-box{padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;min-width:170px;max-width:260px;}
+  .flow-start{background:var(--blue);color:#fff;border-radius:24px;}
+  .flow-start-teal{background:var(--teal);color:#fff;border-radius:24px;}
+  .flow-action{background:var(--blue-light);color:var(--blue);border:1.5px solid #93c5fd;}
+  .flow-action-teal{background:var(--teal-light);color:var(--teal);border:1.5px solid #5eead4;}
+  .flow-decision{background:var(--amber-light);color:#92400e;border:1.5px solid #fbbf24;}
+  .flow-yes{background:var(--green-light);color:var(--green);border:1.5px solid #86efac;}
+  .flow-no{background:var(--red-light);color:var(--red);border:1.5px solid #fca5a5;}
+  .flow-end{background:var(--green);color:#fff;border-radius:24px;}
+  .flow-arrow-down{text-align:center;color:var(--gray-300);font-size:22px;font-weight:700;}
+  .flow-branch{display:flex;gap:20px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;}
+  .flow-branch-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;text-align:center;}
+
+  /* CHECKLIST */
+  .cl-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;position:sticky;top:56px;z-index:100;padding:13px 18px;border-radius:var(--radius);border:1.5px solid var(--gray-200);background:#fff;box-shadow:var(--shadow-md);transition:border-color 0.4s,background 0.4s;}
+  .cl-header.state-progress{background:var(--blue-light);border-color:#93c5fd;}
+  .cl-header.state-progress-teal{background:var(--teal-light);border-color:#5eead4;}
+  .cl-header.state-complete{background:var(--green-light);border-color:#86efac;}
+  .cl-progress{display:flex;align-items:center;gap:12px;flex:1;min-width:180px;}
+  .progress-track{flex:1;height:9px;background:var(--gray-200);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--blue);border-radius:99px;transition:width 0.35s,background 0.35s;}
+  .progress-fill.teal{background:var(--teal);}
+  .progress-fill.complete{background:var(--green)!important;}
+  .progress-text{font-size:13px;font-weight:700;color:var(--gray-500);white-space:nowrap;}
+  .progress-text.complete{color:var(--green);}
+  .reset-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--red);border:1.5px solid #fca5a5;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+  .reset-btn:hover{background:var(--red);color:#fff;}
+  .cl-section{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;}
+  .cl-sec-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background 0.15s;}
+  .cl-sec-header:hover{background:var(--gray-50);}
+  .cl-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff;transition:background 0.3s;}
+  .cl-num.blue{background:var(--blue);}
+  .cl-num.teal{background:var(--teal);}
+  .cl-num.done{background:var(--green)!important;}
+  .cl-sec-title{font-size:14px;font-weight:700;flex:1;}
+  .cl-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+  .cl-pending{background:var(--gray-100);color:var(--gray-500);}
+  .cl-partial{background:var(--amber-light);color:var(--amber);}
+  .cl-done{background:var(--green-light);color:var(--green);}
+  .chevron{font-size:16px;color:var(--gray-300);transition:transform 0.2s;}
+  .cl-section.open .chevron{transform:rotate(180deg);}
+  .cl-body{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+  .cl-section.open .cl-body{max-height:2000px;}
+  .cl-inner{padding:0 18px 18px;}
+  .cl-item{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--gray-100);cursor:pointer;user-select:none;}
+  .cl-item:last-child{border-bottom:none;}
+  .cl-checkbox{width:20px;height:20px;border:2px solid var(--gray-300);border-radius:5px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.18s;font-size:12px;color:transparent;}
+  .cl-item.checked .cl-checkbox{background:var(--green);border-color:var(--green);color:#fff;}
+  .cl-item-text{font-size:13.5px;color:var(--gray-700);line-height:1.55;}
+  .cl-item.checked .cl-item-text{color:var(--gray-400);text-decoration:line-through;text-decoration-color:var(--gray-300);}
+  .cl-note{background:var(--blue-light);border-radius:8px;padding:9px 13px;font-size:12.5px;color:var(--blue);margin-top:8px;display:flex;gap:8px;}
+  .cl-note.teal{background:var(--teal-light);color:var(--teal);}
+  .cl-note.amber{background:var(--amber-light);color:#92400e;}
+  .cl-banner{display:none;background:var(--green-light);border:2px solid var(--green);border-radius:var(--radius);padding:22px;text-align:center;margin-bottom:18px;}
+  .cl-banner.show{display:block;}
+  .cl-banner h3{font-size:17px;font-weight:700;color:var(--green);margin-bottom:4px;}
+  .cl-banner p{font-size:13px;color:var(--gray-700);}
+
+  /* TABLE */
+  .table-wrap{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:var(--gray-100);font-weight:700;text-align:left;padding:10px 14px;border-bottom:2px solid var(--gray-200);white-space:nowrap;}
+  td{padding:10px 14px;border-bottom:1px solid var(--gray-100);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+
+  /* STATUS PILLS */
+  /* Zendesk color groups */
+  .status{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+  /* Yellow — New */
+  .s-new{background:#fefce8;color:#854d0e;border:1px solid #fde047;}
+  /* Red group — Open, Responded (Tracker), In Progress */
+  .s-open{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;}
+  .s-responded{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;}
+  .s-inprogress{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;}
+  /* Blue group — Awaiting Confirmation, On Hold */
+  .s-awaiting{background:#eff6ff;color:#1e40af;border:1px solid #93c5fd;}
+  .s-onhold{background:#eff6ff;color:#1e40af;border:1px solid #93c5fd;}
+  /* Gray group — Resolved, Done, Disregard */
+  .s-resolved{background:#f3f4f6;color:#374151;border:1px solid #d1d5db;}
+  .s-done{background:#f3f4f6;color:#374151;border:1px solid #d1d5db;}
+  .s-disregard{background:#f3f4f6;color:#374151;border:1px solid #d1d5db;}
+  /* Conversation — Red: Responded */
+  .s-responded-convo{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;}
+  /* Conversation — Blue: Awaiting Response, No Active Tickets */
+  .s-awaitingresp{background:#eff6ff;color:#1e40af;border:1px solid #93c5fd;}
+  .s-noactive{background:#eff6ff;color:#1e40af;border:1px solid #93c5fd;}
+  /* Row tints matching status group */
+  .row-yellow{background:#fefce8;}
+  .row-red{background:#fef2f2;}
+  .row-blue{background:#eff6ff;}
+  .row-gray{background:#f9fafb;}
+
+  .ticket-type{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;margin-bottom:4px;}
+  .tt-tracker{background:#f5f3ff;color:var(--purple);}
+  .tt-convo{background:var(--teal-light);color:var(--teal);}
+
+  /* APPENDIX */
+  .method-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:14px;border-left:4px solid var(--blue);}
+  .method-card.teal-border{border-left-color:var(--teal);}
+  .method-card h4{font-size:14px;font-weight:700;margin-bottom:8px;}
+  .method-card p,.method-card li{font-size:13.5px;color:var(--gray-700);}
+
+  @media(max-width:640px){
+    .sop-tab{font-size:13px;padding:9px 16px;}
+    .hero h1{font-size:22px;}
+    .flow-branch{flex-direction:column;align-items:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-brand">CSR <span>SOP Reference Hub</span></div>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <div class="badge">Standard Operating Procedures</div>
+    <h1>Concierge Team SOP Guide</h1>
+    <p>Reference hub for all active CSR standard operating procedures. Select an SOP below to get started.</p>
+  </div>
+
+  <!-- TOP LEVEL SOP TABS -->
+  <div class="sop-tabs">
+    <button class="sop-tab sop-tab-1 active" onclick="showSOP(1,this)">📦 Sample &amp; Rep Requests</button>
+    <button class="sop-tab sop-tab-2" onclick="showSOP(2,this)">💬 Non-Request / General Messages</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SOP 1 — SAMPLE & REP REQUEST
+  ═══════════════════════════════════════════════════ -->
+  <div id="sop1" class="sop-panel active">
+    <!-- SUB TABS -->
+    <div class="sub-tabs">
+      <button class="sub-tab b-blue active" onclick="showSub('s1','s1-flow',this)">🗺️ Flowchart</button>
+      <button class="sub-tab b-green" onclick="showSub('s1','s1-steps',this)">📋 SOP Steps</button>
+      <button class="sub-tab b-purple" onclick="showSub('s1','s1-checklist',this)">✅ Checklist</button>
+      <button class="sub-tab b-amber" onclick="showSub('s1','s1-statuses',this)">🎫 Ticket Statuses</button>
+      <button class="sub-tab b-red" onclick="showSub('s1','s1-appendix',this)">📞 Request Methods</button>
+    </div>
+
+    <!-- FLOWCHART -->
+    <div id="s1-flow" class="sub-panel active">
+      <section>
+        <h2>Process Flowchart</h2>
+        <div class="flowchart">
+          <div class="flow-row"><div class="flow-box flow-start">Request received → Ticket assigned in Zendesk</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action">Step 1: Send initial HCP acknowledgement (Public Reply + Send Text)</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action">Step 2: Search Knowledge Base for verified process</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-decision">Verified KB process found?</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-branch">
+            <div>
+              <div class="flow-branch-label" style="color:var(--green)">✓ Yes</div>
+              <div class="flow-box flow-yes">Follow KB steps → Update HCP → Set Awaiting Response → Log in Tracker</div>
+            </div>
+            <div>
+              <div class="flow-branch-label" style="color:var(--red)">✗ No</div>
+              <div class="flow-box flow-no">Continue to Step 3 ↓</div>
+            </div>
+          </div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action">Step 3: Research &amp; contact manufacturer (within 24 hrs of acknowledgement)</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-decision">Manufacturer responded / process found?</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-branch">
+            <div>
+              <div class="flow-branch-label" style="color:var(--green)">✓ Yes</div>
+              <div class="flow-box flow-yes">Update HCP → Set In Progress → Log in Tracker → Follow up every 5–7 days</div>
+            </div>
+            <div>
+              <div class="flow-branch-label" style="color:var(--red)">✗ No response in 3 days</div>
+              <div class="flow-box flow-no">Escalate to HCP Coordinators → Daily Tracker updates</div>
+            </div>
+          </div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action">Step 4: Confirm shipment / rep visit scheduled</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action">Notify HCP → Set Awaiting Confirmation</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-decision">HCP confirms receipt or rep visit completed?</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-branch">
+            <div>
+              <div class="flow-branch-label" style="color:var(--green)">✓ Yes</div>
+              <div class="flow-box flow-end">Submit as Resolved ✓</div>
+            </div>
+            <div>
+              <div class="flow-branch-label" style="color:var(--amber)">HCP unresponsive / ineligible</div>
+              <div class="flow-box" style="background:var(--gray-100);color:var(--gray-700);border:1.5px solid var(--gray-300);font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Submit as Done</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SOP STEPS -->
+    <div id="s1-steps" class="sub-panel">
+      <section>
+        <h2>Detailed SOP Steps</h2>
+        <div class="card">
+          <div class="steps steps-blue">
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Intake &amp; Ticket Setup</h4>
+                <p>The ticket is created and assigned to you in Zendesk under your unsolved tickets.</p>
+                <ul style="margin-top:8px;">
+                  <li><strong>Conversation ticket</strong> — all HCP-facing communication after the initial acknowledgement (public replies enabled)</li>
+                  <li><strong>Tracker ticket</strong> — call recordings, screenshots, progress summaries (internal notes only)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Send Initial HCP Acknowledgement</h4>
+                <p>Send within <strong>24 hours</strong> of ticket creation.</p>
+                <ol style="margin-top:8px;">
+                  <li>Open the assigned inbound ticket</li>
+                  <li>Switch reply type to <strong>Public Reply</strong></li>
+                  <li>Apply approved greeting macro (or custom message) — reference the request, set next-step expectations</li>
+                  <li>Check <strong>Send Text</strong></li>
+                  <li>Review and <strong>Submit as Responded</strong></li>
+                </ol>
+                <div class="callout callout-amber" style="margin-top:12px;">
+                  <span class="icon">⚠️</span>
+                  <div>When the HCP replies, Zendesk creates a <strong>new Conversation Ticket</strong>. The original becomes the <strong>Tracker Ticket</strong> (internal notes only from this point).</div>
+                </div>
+                <div style="margin-top:10px;font-size:13.5px;color:var(--gray-700);">
+                  <strong>Sending a text from Tracker Tickets:</strong> Check "Send Text" in left-hand window → change Internal Notes to <strong>Public Reply</strong> → Submit<br>
+                  <strong>Sending a text from Conversation Tickets:</strong> Change Internal Notes to <strong>SMS</strong> → Submit
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Check the Knowledge Base</h4>
+                <p>Search the KB for a verified sample request process for this product.</p>
+                <div class="decision"><span>🔀</span><span>Process found in KB?</span></div>
+                <div class="outcome-yes"><strong>Yes →</strong> Follow documented steps → Update HCP in Conversation Ticket → Submit as <strong>Awaiting Response</strong> → Log actions in Tracker as internal note → Submit Tracker as <strong>In Progress</strong></div>
+                <div class="outcome-no"><strong>No / Steps appear incorrect →</strong> Alert <code>#concierge-call-center</code> and proceed to Step 4 (Research).</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Research &amp; Manufacturer Contact</h4>
+                <p>If no verified KB process exists, begin researching the product.</p>
+                <div class="callout callout-blue">
+                  <span class="icon">🤖</span>
+                  <div>AI tools may be used as a starting point. <strong>All information must be verified before sending to an HCP.</strong> Links must not include an AI source URL.</div>
+                </div>
+                <p style="margin-top:8px;"><strong>Within 24 hours of the initial acknowledgement:</strong> Contact manufacturer via preferred method (see <strong>Request Methods</strong> tab).</p>
+                <p style="margin-top:6px;">Update HCP once contact is made or new information is available. See the <strong>Request Methods</strong> tab for portal, phone, and rep request procedures.</p>
+
+                <div class="callout callout-red" style="margin-top:12px;">
+                  <span class="icon">🚩</span>
+                  <div><strong>Any new information found must be flagged to the HCP Coordinators in <code>#concierge-call-center</code> for approval before being shared with the HCP.</strong> Once flagged, log that you posted for approval as an internal note in the Tracker Ticket.</div>
+                </div>
+
+                <div class="callout callout-amber" style="margin-top:12px;">
+                  <span class="icon">📌</span>
+                  <div><strong>Important:</strong> Confirm all HCP address information before submitting requests. Store verified details in Zendesk user fields. Always use the Concierge email and your individual Quo line unless the HCP requested otherwise.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Tracker Ticket Logging</h4>
+                <p>Log every action as an internal note in the Tracker Ticket:</p>
+                <ul style="margin-top:6px;">
+                  <li>Form submissions</li>
+                  <li>Manufacturer emails or calls (include phone numbers and rep emails used)</li>
+                  <li>Any relevant communication</li>
+                </ul>
+                <p style="margin-top:6px;">Submit Tracker Tickets as <strong>In Progress</strong> after manufacturer outreach.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Ongoing Follow-Up &amp; Escalation</h4>
+                <ul>
+                  <li>Follow up with manufacturer/rep every <strong>5–7 days</strong> until resolution</li>
+                  <li>Send HCP updates at minimum <strong>every 5 business days</strong></li>
+                  <li>If no manufacturer/rep communication after <strong>3 days</strong> → escalate to HCP Coordinators</li>
+                  <li>Update Tracker Ticket daily with internal notes while escalated</li>
+                  <li>If escalated <strong>3× without resolution</strong> → flag to HCP Coordinators to determine if outreach should end</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Shipment Confirmation</h4>
+                <p>If shipment or delivery is confirmed:</p>
+                <ul style="margin-top:6px;">
+                  <li>Notify HCP with shipping details or expectations</li>
+                  <li>Submit ticket as <strong>Awaiting Confirmation</strong></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Resolution &amp; Closure</h4>
+                <div class="decision"><span>🔀</span><span>How did this resolve?</span></div>
+                <div class="outcome-yes"><strong>Resolved →</strong> HCP confirmed samples were delivered or rep visit took place</div>
+                <div class="outcome-no"><strong>Done →</strong> Samples not available or HCP ineligible (offer rep visit, similar products from KB, or products that treat same condition). Also Done when tracking shows delivered but HCP unresponsive for 7 days or after 2+ follow-up attempts.</div>
+                <div class="callout callout-teal" style="margin-top:12px;">
+                  <span class="icon">💡</span>
+                  <div>When closing as <strong>Done</strong> due to ineligibility, offer alternatives: rep office visit, similar products from KB that treat the same condition, or products aligned with the HCP's specialty area.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div id="s1-checklist" class="sub-panel">
+      <section>
+        <h2>Full Workflow Checklist</h2>
+        <p style="font-size:14px;color:var(--gray-500);margin-bottom:18px;">Work through each section in order. Check off items as you complete them.</p>
+
+        <div class="cl-banner" id="s1-banner">
+          <div style="font-size:36px;margin-bottom:6px;">🎉</div>
+          <h3>All Steps Complete!</h3>
+          <p>Great work. Make sure the ticket statuses are updated correctly before closing out.</p>
+        </div>
+
+        <div class="cl-header" id="s1-cl-header">
+          <div class="cl-progress">
+            <div class="progress-track"><div class="progress-fill" id="s1-bar" style="width:0%"></div></div>
+            <span class="progress-text" id="s1-progress">0 / 0</span>
+          </div>
+          <button class="reset-btn" onclick="resetCL('s1')">↺ Reset</button>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="cl-section open" data-cl="s1">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num blue" data-n="1">1</div>
+            <div class="cl-sec-title">Intake &amp; Initial Acknowledgement</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Ticket is assigned in Zendesk under my unsolved tickets</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Identified the <strong>Tracker Ticket</strong> (internal notes) vs <strong>Conversation Ticket</strong> (HCP-facing)</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sent initial HCP acknowledgement via <strong>Public Reply + Send Text</strong> within 24 hours</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Applied approved greeting macro (or custom message) referencing the request</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Submitted Tracker Ticket as <strong>Responded</strong></div></div>
+          </div></div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="cl-section" data-cl="s1">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num blue" data-n="2">2</div>
+            <div class="cl-sec-title">Knowledge Base Check</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched KB for a verified sample request process for this product</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Outcome determined: <strong>Found a KB process</strong> OR confirmed no KB article exists</div></div>
+            <div class="cl-note">💡 If found in KB → follow those steps, update HCP, set Awaiting Response on Conversation Ticket, log in Tracker as In Progress. Otherwise continue below.</div>
+          </div></div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="cl-section" data-cl="s1">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num blue" data-n="3">3</div>
+            <div class="cl-sec-title">Research &amp; Manufacturer Contact</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Researched product (AI tools allowed as starting point — <strong>all info must be verified before sending to HCP</strong>)</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Confirmed HCP address information and stored verified details in Zendesk user fields</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Contacted manufacturer via preferred method (portal, phone, or rep request) within 24 hrs of acknowledgement</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Any links shared with HCP are <strong>free of AI source URLs</strong> (no <code>?utm_source=chatgpt</code> etc.)</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><strong>New information flagged to HCP Coordinators in <code>#concierge-call-center</code></strong> for approval before sharing with the HCP</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged the <code>#concierge-call-center</code> flag as an <strong>internal note in the Tracker Ticket</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Updated HCP once contact is made or new info is available — <strong>only after Coordinator approval</strong></div></div>
+          </div></div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="cl-section" data-cl="s1">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num blue" data-n="4">4</div>
+            <div class="cl-sec-title">Tracker Ticket Logging</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged form submissions as internal note in Tracker Ticket</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged manufacturer emails/calls including phone numbers and rep emails used</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Submitted Tracker Ticket as <strong>In Progress</strong> after manufacturer outreach</div></div>
+          </div></div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="cl-section" data-cl="s1">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num blue" data-n="5">5</div>
+            <div class="cl-sec-title">Ongoing Follow-Up</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Following up with manufacturer/rep every <strong>5–7 days</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sending HCP updates at least every <strong>5 business days</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If 3 days with no manufacturer response → <strong>escalated to HCP Coordinators</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Updating Tracker Ticket daily with internal notes while escalated</div></div>
+          </div></div>
+        </div>
+
+        <!-- Section 6 -->
+        <div class="cl-section" data-cl="s1">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num blue" data-n="6">6</div>
+            <div class="cl-sec-title">Confirmation &amp; Closure</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Notified HCP of shipment details or rep visit schedule</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Ticket set to <strong>Awaiting Confirmation</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Received HCP confirmation of delivery or rep visit → submitted as <strong>Resolved</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">OR: HCP unresponsive / ineligible → offered alternatives (rep visit, similar KB products) → submitted as <strong>Done</strong></div></div>
+            <div class="cl-note amber">⚠️ If HCP becomes unresponsive after 7 days or 2+ follow-up attempts, submit as Done.</div>
+          </div></div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- TICKET STATUSES -->
+    <div id="s1-statuses" class="sub-panel">
+      <section>
+        <h2>Ticket Statuses</h2>
+
+        <div class="callout callout-blue" style="margin-bottom:20px;">
+          <span class="icon">📌</span>
+          <div>There are two ticket types. <strong>Tracker Tickets</strong> track your actions and progress (internal notes only). <strong>Conversation Tickets</strong> are created when an HCP responds and are used for all HCP-facing communication.</div>
+        </div>
+
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">🗂 Tracker Ticket Statuses</h3>
+        <div class="table-wrap" style="margin-bottom:28px;">
+          <table>
+            <thead><tr><th>Status</th><th>When to Use</th></tr></thead>
+            <tbody>
+              <tr class="row-yellow"><td><span class="status s-new">New</span></td><td>Ticket created but no communication has been sent to the HCP yet.</td></tr>
+              <tr class="row-red"><td><span class="status s-open">Open</span></td><td>Ticket assigned to you, but you haven't started working on it yet. Change to <strong>Responded</strong> once you initiate contact.</td></tr>
+              <tr class="row-red"><td><span class="status s-responded">Responded</span></td><td>Intro message sent to the HCP. You have <em>not</em> yet contacted a rep or manufacturer.</td></tr>
+              <tr class="row-red"><td><span class="status s-inprogress">In Progress</span></td><td>Manufacturer/rep contacted, you are researching, or otherwise actively working on the ticket. HCP has been updated and told you'll follow up. Includes filled-out sample forms with no shipping confirmation yet.</td></tr>
+              <tr class="row-blue"><td><span class="status s-awaiting">Awaiting Confirmation</span></td><td>Portal link sent to HCP, samples confirmed shipped, rep info sent, rep said they're reaching out, or rep visit is scheduled. Only waiting for HCP to confirm receipt or visit completion.</td></tr>
+              <tr class="row-blue"><td><span class="status s-onhold">On Hold</span></td><td>Waiting on information with <em>no reasonable ETA</em> (e.g., 4–6 week registration approval wait, unreleased product). <strong>Ask in the channel before setting this status.</strong></td></tr>
+              <tr class="row-gray"><td><span class="status s-resolved">Resolved</span></td><td>Received confirmation from HCP and/or rep that the visit took place or samples were delivered.</td></tr>
+              <tr class="row-gray"><td><span class="status s-done">Done</span></td><td>Portal sent with confirmed shipment or rep notified, but HCP is unresponsive. OR HCP is ineligible per manufacturer guidelines.</td></tr>
+              <tr class="row-gray"><td><span class="status s-disregard">Disregard</span></td><td>Duplicate ticket or ticket created by accident. <strong>Notify Nick and Lauren before disregarding.</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">💬 Conversation Ticket Statuses</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Status</th><th>What It Means</th></tr></thead>
+            <tbody>
+              <tr class="row-red">
+                <td><span class="status s-responded-convo">Responded</span></td>
+                <td><strong>⚠️ Action needed.</strong> On a Conversation Ticket, "Responded" means the <em>HCP has responded to you</em>. If you see this status on a Conversation Ticket, you need to reach out to the HCP.</td>
+              </tr>
+              <tr class="row-blue">
+                <td><span class="status s-awaitingresp">Awaiting Response</span></td>
+                <td>You have responded to the HCP. Set this after sending a message so the status color changes and the team can see you've replied.</td>
+              </tr>
+              <tr class="row-blue">
+                <td><span class="status s-noactive">No Active Tickets</span></td>
+                <td>Set when <em>all active tickets for this HCP are completed</em>. Preserves the conversation history so if the HCP reaches out again, the ticket reactivates with full history.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- APPENDIX / REQUEST METHODS -->
+    <div id="s1-appendix" class="sub-panel">
+      <section>
+        <h2>Request Methods (Appendix A)</h2>
+        <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;">Use these methods in order of preference when submitting sample or rep requests on behalf of an HCP.</p>
+
+        <div class="method-card">
+          <h4>⭐ Preferred: Manufacturer Sample Website / Portal</h4>
+          <p>Always try the manufacturer's official sample portal first.</p>
+          <p style="margin-top:8px;"><strong>Information you may need:</strong></p>
+          <ul style="margin-top:4px;">
+            <li>HCP Name</li>
+            <li>NPI number</li>
+            <li>Credentials (MD, DO, NP, PA, etc.)</li>
+            <li>Specialty</li>
+            <li>Practice Name</li>
+            <li>Practice Address (verify via independent search — <strong>no home addresses</strong>)</li>
+          </ul>
+          <div class="callout callout-amber" style="margin-top:12px;">
+            <span class="icon">🔐</span>
+            <div><strong>If a portal account is required:</strong> Send the HCP the portal link and let them know that sample availability may vary. Offer support if issues arise.</div>
+          </div>
+        </div>
+
+        <div class="method-card">
+          <h4>📝 Alternative: Rep Request / General Inquiry via Manufacturer Website</h4>
+          <p>Submit a rep request or general inquiry form through the manufacturer's website if no direct sample portal exists.</p>
+        </div>
+
+        <div class="method-card">
+          <h4>📞 Alternative: Call or Email Customer Support</h4>
+          <p>Use if no web option exists. State clearly that the Concierge is acting on behalf of the HCP/practice.</p>
+          <div class="callout callout-blue" style="margin-top:10px;">
+            <span class="icon">💬</span>
+            <div>If asked about your direct relationship to the HCP/practice, you can say you're <em>assisting them with the request</em> or that you are <em>an assistant</em>.</div>
+          </div>
+        </div>
+
+        <div class="method-card">
+          <h4>🚨 No Communication After 3 Days</h4>
+          <p>Partner with HCP Coordinators. Update Tracker Ticket daily with internal notes.</p>
+        </div>
+      </section>
+    </div>
+  </div><!-- /SOP 1 -->
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SOP 2 — NON-REQUEST / GENERAL MESSAGES
+  ═══════════════════════════════════════════════════ -->
+  <div id="sop2" class="sop-panel">
+    <!-- SUB TABS -->
+    <div class="sub-tabs">
+      <button class="sub-tab t-teal active" onclick="showSub('s2','s2-flow',this)">🗺️ Flowchart</button>
+      <button class="sub-tab t-blue" onclick="showSub('s2','s2-steps',this)">📋 SOP Steps</button>
+      <button class="sub-tab t-green" onclick="showSub('s2','s2-checklist',this)">✅ Checklist</button>
+      <button class="sub-tab t-amber" onclick="showSub('s2','s2-statuses',this)">🎫 Ticket Statuses</button>
+    </div>
+
+    <!-- FLOWCHART -->
+    <div id="s2-flow" class="sub-panel active">
+      <section>
+        <h2>Process Flowchart</h2>
+        <div class="flowchart">
+          <div class="flow-row"><div class="flow-box flow-start-teal">General/non-request message received → Ticket created in Zendesk</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action-teal">Step 1: Fill in Zendesk user fields (Name, Credentials, NPI, Phone, Specialty, Practice info, etc.)</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-action-teal">Step 2: Send introductory text via "Greeting explaining Concierge service" macro — within 24 hours</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-decision">HCP responds?</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-branch">
+            <div>
+              <div class="flow-branch-label" style="color:var(--green)">✓ Yes — HCP responds</div>
+              <div class="flow-box" style="background:var(--teal-light);color:var(--teal);border:1.5px solid #5eead4;font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Continue to Step 3 ↓</div>
+            </div>
+            <div>
+              <div class="flow-branch-label" style="color:var(--red)">✗ No response</div>
+              <div class="flow-box flow-no">Follow up next day → if still no response, send inactivity message → Submit as Done</div>
+            </div>
+          </div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-decision">What does the HCP want?</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-branch">
+            <div>
+              <div class="flow-branch-label" style="color:var(--blue)">Rep or sample request</div>
+              <div class="flow-box flow-action">Flag in channel → HCP Coordinator updates ticket title or creates new ticket → Follow Sample/Rep Request SOP</div>
+            </div>
+            <div>
+              <div class="flow-branch-label" style="color:var(--purple)">Wants suggestions</div>
+              <div class="flow-box flow-action-teal">Use KB for 2–3 relevant products → Ask HCP if they want you to look into them → If yes, flag for new ticket + follow SOP</div>
+            </div>
+          </div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-row"><div class="flow-box flow-decision">HCP wants to hold off on samples?</div></div>
+          <div class="flow-arrow-down">↓</div>
+          <div class="flow-branch">
+            <div>
+              <div class="flow-branch-label" style="color:var(--green)">✓ Yes — holding off</div>
+              <div class="flow-box flow-end">Let HCP know to reach back out → Send survey link → Submit as Done ✓</div>
+            </div>
+            <div>
+              <div class="flow-branch-label" style="color:var(--teal)">Makes a request</div>
+              <div class="flow-box" style="background:var(--teal-light);color:var(--teal);border:1.5px solid #5eead4;font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Flag for new/updated ticket → Follow Sample/Rep Request SOP</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SOP STEPS -->
+    <div id="s2-steps" class="sub-panel">
+      <section>
+        <h2>Detailed SOP Steps</h2>
+        <div class="card">
+          <div class="steps steps-teal">
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Fill in Zendesk User Fields</h4>
+                <p>Many fields populate automatically at ticket creation — fill in any missing information:</p>
+                <ul style="margin-top:8px;">
+                  <li><strong>Name &amp; Credentials</strong> (MD, DO, NP, PA, etc.) — needed to address them correctly in all future communications</li>
+                  <li>Phone number</li>
+                  <li>NPI</li>
+                  <li>Specialty</li>
+                  <li>Practice Name</li>
+                  <li>Practice Address</li>
+                  <li>License Number</li>
+                  <li><strong>Notes:</strong> Any other info gathered (fax number, additional practice name/address, etc.)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Send Introductory Text Message</h4>
+                <p>Send within <strong>24 hours</strong> of ticket creation using the <em>"Greeting explaining the Concierge service"</em> macro.</p>
+                <div class="callout callout-teal" style="margin-top:10px;">
+                  <span class="icon">📱</span>
+                  <div>
+                    <strong>From a Tracker Ticket:</strong> Check "Send Text" in left-hand window → change Internal Notes to <strong>Public Reply</strong> → Submit<br><br>
+                    <strong>From a Conversation Ticket:</strong> Change Internal Notes to <strong>SMS</strong> → Submit
+                  </div>
+                </div>
+                <p style="margin-top:8px;">Correct any pre-filled information in the macro as needed. You'll be prompted to confirm before the message sends.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Handle HCP Response</h4>
+                <div class="decision"><span>🔀</span><span>What does the HCP want?</span></div>
+
+                <p style="margin-top:10px;font-weight:700;font-size:14px;">Option A: Rep or sample request</p>
+                <div class="outcome-yes"><strong>→</strong> Flag in <code>#concierge-call-center</code>. HCP Coordinator will update the ticket title or create a new ticket. Follow the <strong>Sample &amp; Rep Request SOP</strong>.</div>
+
+                <p style="margin-top:14px;font-weight:700;font-size:14px;">Option B: HCP wants suggestions</p>
+                <div class="outcome-yes" style="border-left-color:var(--teal);background:var(--teal-light);">
+                  <strong>→</strong> Use the Knowledge Base to recommend <strong>2–3 items</strong> relevant to their specialty area and practice. If nothing in the KB matches, search for popular products or available provider samples, or use ChatGPT for product suggestions — but clarify with the HCP: <em>"We will look into these product samples"</em> (do <strong>not</strong> say you can definitely get them).<br><br>
+                  <strong>Always ask the HCP first if they want you to look into the products you find.</strong><br><br>
+                  <strong>Any new information found must be flagged to the HCP Coordinators in <code>#concierge-call-center</code> for approval before being shared with the HCP.</strong> Log that you posted for approval as an internal note in the Tracker Ticket.
+                </div>
+                <ul style="margin-top:10px;">
+                  <li>If the HCP wants you to look into a specific product → flag in channel for a new/updated ticket and follow the Sample &amp; Rep Request SOP</li>
+                  <li>If the HCP wants to hold off → let them know to reach back out, <strong>send the survey link</strong>, and submit as <strong>Done</strong></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-body">
+                <h4>Handle No Response</h4>
+                <ol style="margin-top:6px;">
+                  <li>Follow up the next day asking if there's anything they'd like you to get started for them</li>
+                  <li>If still no response the following day, send an inactivity message</li>
+                  <li>Submit as <strong>Done</strong></li>
+                </ol>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div id="s2-checklist" class="sub-panel">
+      <section>
+        <h2>Full Workflow Checklist</h2>
+        <p style="font-size:14px;color:var(--gray-500);margin-bottom:18px;">Work through each section in order. Check off items as you complete them.</p>
+
+        <div class="cl-banner" id="s2-banner">
+          <div style="font-size:36px;margin-bottom:6px;">🎉</div>
+          <h3>All Steps Complete!</h3>
+          <p>Great work. Make sure the ticket status is updated correctly before closing out.</p>
+        </div>
+
+        <div class="cl-header" id="s2-cl-header">
+          <div class="cl-progress">
+            <div class="progress-track"><div class="progress-fill teal" id="s2-bar" style="width:0%"></div></div>
+            <span class="progress-text" id="s2-progress">0 / 0</span>
+          </div>
+          <button class="reset-btn" onclick="resetCL('s2')">↺ Reset</button>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="cl-section open" data-cl="s2">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num teal" data-n="1">1</div>
+            <div class="cl-sec-title">Zendesk User Fields</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Name &amp; Credentials filled in (MD, DO, NP, PA, etc.)</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Phone number entered</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">NPI entered</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Specialty entered</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Practice Name entered</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Practice Address entered</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">License Number entered</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Notes field updated with any additional info (fax number, alternate practice address, etc.)</div></div>
+          </div></div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="cl-section" data-cl="s2">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num teal" data-n="2">2</div>
+            <div class="cl-sec-title">Introductory Text</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sent introductory text via <strong>"Greeting explaining the Concierge service"</strong> macro within 24 hours</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Corrected any pre-filled macro information as needed</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Used correct send method: <strong>Public Reply + Send Text</strong> (Tracker) or <strong>SMS</strong> (Conversation Ticket)</div></div>
+          </div></div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="cl-section" data-cl="s2">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num teal" data-n="3">3</div>
+            <div class="cl-sec-title">HCP Response Handling</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Determined what the HCP wants: <strong>rep/sample request</strong>, <strong>product suggestions</strong>, or <strong>holding off</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If rep/sample request → flagged in channel for Coordinator to update/create ticket</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If suggestions needed → used KB for 2–3 relevant products, confirmed with HCP before committing to look into them</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Did <strong>NOT</strong> promise samples before verifying availability</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><strong>New information flagged to HCP Coordinators in <code>#concierge-call-center</code></strong> for approval before sharing with the HCP</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged the <code>#concierge-call-center</code> flag as an <strong>internal note in the Tracker Ticket</strong></div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If HCP wants to hold off → let them know to reach back out → <strong>sent survey link</strong> → submitted as <strong>Done</strong></div></div>
+            <div class="cl-note teal">💡 If HCP makes a request after suggestions → flag for a new/updated ticket and follow the Sample &amp; Rep Request SOP.</div>
+          </div></div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="cl-section" data-cl="s2">
+          <div class="cl-sec-header" onclick="toggleCLSection(this)">
+            <div class="cl-num teal" data-n="4">4</div>
+            <div class="cl-sec-title">No Response Handling</div>
+            <span class="cl-badge cl-pending">Not started</span>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cl-body"><div class="cl-inner">
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Followed up the next day asking if there's anything they'd like to get started</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Still no response → sent inactivity message</div></div>
+            <div class="cl-item" onclick="toggleCLItem(this,'s2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Submitted as <strong>Done</strong></div></div>
+          </div></div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- TICKET STATUSES (shared reference) -->
+    <div id="s2-statuses" class="sub-panel">
+      <section>
+        <h2>Ticket Statuses</h2>
+        <div class="callout callout-teal" style="margin-bottom:20px;">
+          <span class="icon">📌</span>
+          <div>Same statuses apply across all SOPs. Reference below for how they apply specifically to non-request / general message tickets.</div>
+        </div>
+
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Key Statuses for This SOP</h3>
+        <div class="table-wrap" style="margin-bottom:24px;">
+          <table>
+            <thead><tr><th>Status</th><th>When to Use in This SOP</th></tr></thead>
+            <tbody>
+              <tr><td><span class="status s-responded">Responded</span> <span class="ticket-type tt-tracker">Tracker</span></td><td>After sending the intro/greeting text. You've initiated contact but haven't taken further action.</td></tr>
+              <tr><td><span class="status s-done">Done</span></td><td>HCP doesn't respond after 2 follow-up attempts. OR HCP wants to hold off — send survey link first, then set Done.</td></tr>
+              <tr><td><span class="status s-awaitingresp">Awaiting Response</span> <span class="ticket-type tt-convo">Conversation</span></td><td>After you reply to the HCP on a Conversation Ticket. Shows the team you've responded.</td></tr>
+              <tr><td><span class="status s-responded">Responded</span> <span class="ticket-type tt-convo">Conversation</span></td><td>⚠️ <strong>This means the HCP replied to you.</strong> If you see this on a Conversation Ticket, you need to respond to the HCP.</td></tr>
+              <tr><td><span class="status s-noactive">No Active Tickets</span> <span class="ticket-type tt-convo">Conversation</span></td><td>Set when all active tickets for this HCP are completed, to preserve history for future interactions.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-amber">
+          <span class="icon">⚠️</span>
+          <div>The <strong>On Hold</strong> status requires Coordinator approval before use. The <strong>Disregard</strong> status requires notifying Nick and Lauren first.</div>
+        </div>
+      </section>
+    </div>
+
+  </div><!-- /SOP 2 -->
+
+</div><!-- /container -->
+
+<script>
+function showSOP(n, btn) {
+  document.querySelectorAll('.sop-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sop-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('sop'+n).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showSub(sopId, panelId, btn) {
+  const sop = document.getElementById(sopId) || document.getElementById('sop'+(sopId==='s1'?1:2));
+  const panel = sop || document;
+  document.querySelectorAll('#sop'+(sopId==='s1'?1:2)+' .sub-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#sop'+(sopId==='s1'?1:2)+' .sub-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleCLSection(header) {
+  header.closest('.cl-section').classList.toggle('open');
+}
+
+function toggleCLItem(item, clId) {
+  item.classList.toggle('checked');
+  updateCLProgress(clId);
+}
+
+function updateCLProgress(clId) {
+  const all = document.querySelectorAll('[data-cl="'+clId+'"] .cl-item');
+  const checked = document.querySelectorAll('[data-cl="'+clId+'"] .cl-item.checked');
+  const total = all.length, done = checked.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const bar = document.getElementById(clId+'-bar');
+  const txt = document.getElementById(clId+'-progress');
+  const hdr = document.getElementById(clId+'-cl-header');
+  const banner = document.getElementById(clId+'-banner');
+  bar.style.width = pct+'%';
+  txt.textContent = done+' / '+total;
+  hdr.classList.remove('state-progress','state-progress-teal','state-complete');
+  if (pct===100) { bar.classList.add('complete'); txt.classList.add('complete'); banner.classList.add('show'); hdr.classList.add('state-complete'); }
+  else if (done>0) {
+    bar.classList.remove('complete'); txt.classList.remove('complete'); banner.classList.remove('show');
+    hdr.classList.add(clId==='s1'?'state-progress':'state-progress-teal');
+  } else { bar.classList.remove('complete'); txt.classList.remove('complete'); banner.classList.remove('show'); }
+
+  document.querySelectorAll('[data-cl="'+clId+'"]').forEach(sec => {
+    const items = sec.querySelectorAll('.cl-item');
+    const ci = sec.querySelectorAll('.cl-item.checked');
+    const badge = sec.querySelector('.cl-badge');
+    const num = sec.querySelector('.cl-num');
+    if (!items.length) return;
+    if (ci.length===0) { badge.className='cl-badge cl-pending'; badge.textContent='Not started'; if(num) num.classList.remove('done'); }
+    else if (ci.length===items.length) { badge.className='cl-badge cl-done'; badge.textContent='Complete'; if(num) num.classList.add('done'); }
+    else { badge.className='cl-badge cl-partial'; badge.textContent=ci.length+'/'+items.length; if(num) num.classList.remove('done'); }
+  });
+}
+
+function resetCL(clId) {
+  document.querySelectorAll('[data-cl="'+clId+'"] .cl-item.checked').forEach(i => i.classList.remove('checked'));
+  updateCLProgress(clId);
+}
+
+updateCLProgress('s1');
+updateCLProgress('s2');
+</script>
+</body>
+</html>
