@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v3 Sample Request SOP</title>
+<style>
+  :root {
+    --brand-purple:#6B52B5;--brand-blue:#0F1B35;--brand-teal:#8DCFCB;--brand-mint:#EAF8F8;--brand-pink:#DDD0D8;
+    --blue:#2563eb;--blue-light:#eff6ff;--blue-mid:#dbeafe;
+    --teal:#0d9488;--teal-light:#f0fdfa;--teal-mid:#ccfbf1;
+    --green:#16a34a;--green-light:#f0fdf4;
+    --amber:#d97706;--amber-light:#fffbeb;
+    --red:#dc2626;--red-light:#fef2f2;
+    --purple:#7c3aed;--purple-light:#f5f3ff;--purple-mid:#ede9fe;
+    --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+    --gray-300:#d1d5db;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
+    --radius:12px;--shadow:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 12px rgba(0,0,0,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--brand-mint);color:var(--gray-900);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .container{max-width:1020px;margin:0 auto;padding:40px 24px 80px;}
+  .nav{background:var(--brand-blue);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(15,27,53,0.18);}
+  .nav-brand{font-size:15px;font-weight:800;color:#fff;}
+  .nav-brand span{color:var(--brand-teal);font-weight:400;}
+  .nav-version{font-size:11px;font-weight:700;background:var(--brand-teal);color:var(--brand-blue);padding:3px 10px;border-radius:20px;}
+  .hero{text-align:center;padding:44px 0 28px;}
+  .hero .badge{display:inline-block;font-size:11px;font-weight:700;background:rgba(107,82,181,0.1);color:var(--brand-purple);border:1px solid rgba(107,82,181,0.3);padding:4px 14px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+  .hero h1{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px;color:var(--brand-blue);}
+  .hero p{color:var(--gray-500);font-size:15px;max-width:560px;margin:0 auto;}
+  .group-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;}
+  .group-tab{padding:11px 22px;border-radius:50px;border:2px solid transparent;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);background:#fff;}
+  .group-tab:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+  .gt-1{color:var(--blue);border-color:#93c5fd;}
+  .gt-1:hover,.gt-1.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .gt-2{color:var(--teal);border-color:#5eead4;}
+  .gt-2:hover,.gt-2.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .gt-3{color:var(--purple);border-color:#c4b5fd;}
+  .gt-3:hover,.gt-3.active{background:var(--purple);color:#fff;border-color:var(--purple);}
+  .group-panel{display:none;}.group-panel.active{display:block;}
+  .group-banner{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:var(--radius);margin-bottom:24px;font-size:14px;font-weight:600;}
+  .gb-1{background:var(--blue-light);border:1.5px solid #93c5fd;color:var(--blue);}
+  .gb-2{background:var(--teal-light);border:1.5px solid #5eead4;color:var(--teal);}
+  .gb-3{background:var(--purple-light);border:1.5px solid #c4b5fd;color:var(--purple);}
+  .group-banner .gb-icon{font-size:20px;}
+  .group-banner .gb-desc{font-weight:400;color:var(--gray-700);margin-left:4px;}
+  .sub-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;}
+  .sub-tab{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:9px 18px;border-radius:50px;cursor:pointer;border:1.5px solid;transition:all 0.18s;box-shadow:var(--shadow);background:#fff;}
+  .sub-tab:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+  .s-blue{color:var(--blue);border-color:#93c5fd;}.s-blue:hover,.s-blue.active{background:var(--blue);color:#fff;}
+  .s-teal{color:var(--teal);border-color:#5eead4;}.s-teal:hover,.s-teal.active{background:var(--teal);color:#fff;}
+  .s-purple{color:var(--purple);border-color:#c4b5fd;}.s-purple:hover,.s-purple.active{background:var(--purple);color:#fff;}
+  .s-green{color:var(--green);border-color:#86efac;}.s-green:hover,.s-green.active{background:var(--green);color:#fff;}
+  .s-amber{color:#92400e;border-color:#fcd34d;}.s-amber:hover,.s-amber.active{background:var(--amber);color:#fff;}
+  .s-red{color:var(--red);border-color:#fca5a5;}.s-red:hover,.s-red.active{background:var(--red);color:#fff;}
+  .s-indigo{color:#4f46e5;border-color:#a5b4fc;}.s-indigo:hover,.s-indigo.active{background:#4f46e5;color:#fff;}
+  .s-rose{color:#e11d48;border-color:#fda4af;}.s-rose:hover,.s-rose.active{background:#e11d48;color:#fff;}
+  .sub-panel{display:none;}.sub-panel.active{display:block;}
+  .card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;}
+  .card h3{font-size:16px;font-weight:700;margin-bottom:10px;}
+  .card p,.card li{font-size:14px;color:var(--gray-700);line-height:1.7;}
+  ul,ol{padding-left:20px;margin:8px 0;}li{margin-bottom:5px;}
+  strong{font-weight:700;}
+  code{background:var(--gray-100);padding:1px 6px;border-radius:4px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;}
+  section>h2{font-size:20px;font-weight:800;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--gray-200);}
+  .callout{border-radius:10px;padding:14px 18px;font-size:13.5px;margin:14px 0;display:flex;gap:12px;align-items:flex-start;}
+  .callout .icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .callout-blue{background:var(--blue-light);border:1px solid #93c5fd;}
+  .callout-amber{background:var(--amber-light);border:1px solid #fcd34d;}
+  .callout-green{background:var(--green-light);border:1px solid #86efac;}
+  .callout-red{background:var(--red-light);border:1px solid #fca5a5;}
+  .callout-teal{background:var(--teal-light);border:1px solid #5eead4;}
+  .callout-purple{background:var(--purple-light);border:1px solid #c4b5fd;}
+  .steps{counter-reset:step;}
+  .step{display:flex;gap:18px;margin-bottom:4px;position:relative;}
+  .step::before{counter-increment:step;content:counter(step);flex-shrink:0;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:2px;color:#fff;}
+  .steps-blue .step::before{background:var(--blue);}
+  .steps-teal .step::before{background:var(--teal);}
+  .steps-purple .step::before{background:var(--purple);}
+  .step:not(:last-child)::after{content:'';position:absolute;left:16px;top:38px;bottom:-4px;width:2px;background:var(--gray-200);}
+  .step-body{padding-bottom:24px;flex:1;}
+  .step-body h4{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .step-body p,.step-body li{font-size:14px;color:var(--gray-700);}
+  .group-only{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;margin-left:8px;vertical-align:middle;}
+  .go-1{background:var(--blue-light);color:var(--blue);border:1px solid #93c5fd;}
+  .go-all{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-300);}
+  .decision{background:var(--amber-light);border:2px solid #fbbf24;border-radius:10px;padding:13px 17px;margin:12px 0;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;}
+  .outcome-yes{background:var(--green-light);border-left:4px solid var(--green);padding:11px 14px;border-radius:0 8px 8px 0;margin:7px 0;font-size:13.5px;}
+  .outcome-no{background:var(--red-light);border-left:4px solid var(--red);padding:11px 14px;border-radius:0 8px 8px 0;margin:7px 0;font-size:13.5px;}
+  .outcome-info{background:var(--blue-light);border-left:4px solid var(--blue);padding:11px 14px;border-radius:0 8px 8px 0;margin:7px 0;font-size:13.5px;}
+  .flowchart{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);overflow-x:auto;}
+  .flow-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .flow-box{padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;min-width:170px;max-width:300px;}
+  .flow-start{background:var(--blue);color:#fff;border-radius:24px;}
+  .flow-start-teal{background:var(--teal);color:#fff;border-radius:24px;}
+  .flow-start-purple{background:var(--purple);color:#fff;border-radius:24px;}
+  .flow-action{background:var(--blue-light);color:var(--blue);border:1.5px solid #93c5fd;}
+  .flow-action-teal{background:var(--teal-light);color:var(--teal);border:1.5px solid #5eead4;}
+  .flow-action-purple{background:var(--purple-light);color:var(--purple);border:1.5px solid #c4b5fd;}
+  .flow-decision{background:var(--amber-light);color:#92400e;border:1.5px solid #fbbf24;}
+  .flow-yes{background:var(--green-light);color:var(--green);border:1.5px solid #86efac;}
+  .flow-no{background:var(--red-light);color:var(--red);border:1.5px solid #fca5a5;}
+  .flow-end{background:var(--green);color:#fff;border-radius:24px;}
+  .flow-arrow-down{text-align:center;color:var(--gray-300);font-size:22px;font-weight:700;}
+  .flow-branch{display:flex;gap:20px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;}
+  .flow-branch-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;text-align:center;}
+  .cl-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;position:sticky;top:56px;z-index:100;padding:13px 18px;border-radius:var(--radius);border:1.5px solid var(--gray-200);background:#fff;box-shadow:var(--shadow-md);transition:border-color 0.4s,background 0.4s;}
+  .cl-header.state-progress-blue{background:var(--blue-light);border-color:#93c5fd;}
+  .cl-header.state-progress-teal{background:var(--teal-light);border-color:#5eead4;}
+  .cl-header.state-progress-purple{background:var(--purple-light);border-color:#c4b5fd;}
+  .cl-header.state-complete{background:var(--green-light);border-color:#86efac;}
+  .cl-progress{display:flex;align-items:center;gap:12px;flex:1;min-width:180px;}
+  .progress-track{flex:1;height:9px;background:var(--gray-200);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:99px;transition:width 0.35s,background 0.35s;}
+  .pf-blue{background:var(--blue);}.pf-teal{background:var(--teal);}.pf-purple{background:var(--purple);}
+  .progress-fill.complete{background:var(--green)!important;}
+  .progress-text{font-size:13px;font-weight:700;color:var(--gray-500);white-space:nowrap;}
+  .progress-text.complete{color:var(--green);}
+  .reset-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--red);border:1.5px solid #fca5a5;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+  .reset-btn:hover{background:var(--red);color:#fff;}
+  .cl-section{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;}
+  .cl-sec-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background 0.15s;}
+  .cl-sec-header:hover{background:var(--gray-50);}
+  .cl-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff;transition:background 0.3s;}
+  .cl-num.blue{background:var(--blue);}.cl-num.teal{background:var(--teal);}.cl-num.purple{background:var(--purple);}
+  .cl-num.done{background:var(--green)!important;}
+  .cl-sec-title{font-size:14px;font-weight:700;flex:1;}
+  .cl-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+  .cl-pending{background:var(--gray-100);color:var(--gray-500);}
+  .cl-partial{background:var(--amber-light);color:var(--amber);}
+  .cl-done{background:var(--green-light);color:var(--green);}
+  .chevron{font-size:16px;color:var(--gray-300);transition:transform 0.2s;}
+  .cl-section.open .chevron{transform:rotate(180deg);}
+  .cl-body{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+  .cl-section.open .cl-body{max-height:2000px;}
+  .cl-inner{padding:0 18px 18px;}
+  .cl-item{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--gray-100);cursor:pointer;user-select:none;}
+  .cl-item:last-child{border-bottom:none;}
+  .cl-checkbox{width:20px;height:20px;border:2px solid var(--gray-300);border-radius:5px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.18s;font-size:12px;color:transparent;}
+  .cl-item.checked .cl-checkbox{background:var(--green);border-color:var(--green);color:#fff;}
+  .cl-item-text{font-size:13.5px;color:var(--gray-700);line-height:1.55;}
+  .cl-item.checked .cl-item-text{color:var(--gray-400);text-decoration:line-through;text-decoration-color:var(--gray-300);}
+  .cl-note{border-radius:8px;padding:9px 13px;font-size:12.5px;margin-top:8px;display:flex;gap:8px;}
+  .cl-note.blue{background:var(--blue-light);color:var(--blue);}
+  .cl-note.teal{background:var(--teal-light);color:var(--teal);}
+  .cl-note.purple{background:var(--purple-light);color:var(--purple);}
+  .cl-note.amber{background:var(--amber-light);color:#92400e;}
+  .cl-note.red{background:var(--red-light);color:var(--red);}
+  .cl-banner{display:none;background:var(--green-light);border:2px solid var(--green);border-radius:var(--radius);padding:22px;text-align:center;margin-bottom:18px;}
+  .cl-banner.show{display:block;}
+  .cl-banner h3{font-size:17px;font-weight:700;color:var(--green);margin-bottom:4px;}
+  .cl-banner p{font-size:13px;color:var(--gray-700);}
+  .table-wrap{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;overflow-x:auto;margin-bottom:20px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:var(--gray-100);font-weight:700;text-align:left;padding:10px 14px;border-bottom:2px solid var(--gray-200);white-space:nowrap;}
+  td{padding:10px 14px;border-bottom:1px solid var(--gray-100);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  .sys-pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;margin:2px 4px 2px 0;}
+  .sp-zendesk{background:#fef2f2;color:var(--red);border:1px solid #fca5a5;}
+  .sp-kb{background:var(--green-light);color:var(--green);border:1px solid #86efac;}
+  .sp-slack{background:var(--purple-light);color:var(--purple);border:1px solid #c4b5fd;}
+  .sp-perplexity{background:var(--blue-light);color:var(--blue);border:1px solid #93c5fd;}
+  .sp-macros{background:var(--amber-light);color:#92400e;border:1px solid #fcd34d;}
+  .sp-maxima{background:var(--teal-light);color:var(--teal);border:1px solid #5eead4;}
+  .ongoing-card{background:#fff;border:2px solid var(--amber);border-radius:var(--radius);padding:20px 24px;margin-top:24px;}
+  .ongoing-card h3{font-size:15px;font-weight:700;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .prompt-block{position:relative;background:var(--brand-blue);color:#cbd5e1;border-radius:var(--radius);padding:24px;font-size:12.5px;line-height:1.65;font-family:'SF Mono','Fira Code',monospace;white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;margin:16px 0;max-height:500px;overflow-y:auto;}
+  .prompt-block b{color:#fff;font-weight:700;}
+  .copy-btn{position:sticky;top:0;float:right;background:var(--brand-purple);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s;z-index:2;}
+  .copy-btn:hover{background:#5a42a0;}
+  .post-template{background:#fff;border:2px solid var(--gray-200);border-radius:var(--radius);padding:20px;margin:16px 0;}
+  .post-template code{display:block;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:16px;font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;color:var(--gray-700);margin-top:8px;}
+  .verify-checklist{background:#fff;border:2px solid var(--red);border-radius:var(--radius);padding:20px;margin:16px 0;}
+  .verify-checklist h4{font-size:14px;font-weight:700;color:var(--red);margin-bottom:10px;}
+  .verify-checklist li{font-size:13.5px;color:var(--gray-700);margin-bottom:6px;}
+  @media(max-width:640px){.group-tab{font-size:13px;padding:9px 16px;}.hero h1{font-size:22px;}.flow-branch{flex-direction:column;align-items:center;}.prompt-block{font-size:11px;padding:16px;}}
+</style>
+</head>
+<body>
+<div class="nav"><div class="nav-brand">DocUpdate <span>Concierge SOP</span></div><div class="nav-version">v3</div></div>
+<div class="container">
+<div class="hero"><div class="badge">Standard Operating Procedure</div><h1>Sample &amp; Rep Request SOP</h1><p>Select your group below to see the steps, flowchart, and checklist specific to your workflow.</p></div>
+<div class="group-tabs"><button class="group-tab gt-1 active" onclick="showGroup(1,this)">🔬 Group 1 — Research</button><button class="group-tab gt-2" onclick="showGroup(2,this)">⚙️ Group 2 — Process</button><button class="group-tab gt-3" onclick="showGroup(3,this)">🔗 Group 3 — Portal</button></div>
+
+<!-- GROUP 1 -->
+<div id="g1" class="group-panel active">
+<div class="group-banner gb-1"><span class="gb-icon">🔬</span><div><b>Group 1 — Research Focus</b><span class="gb-desc"> · Uses Perplexity AI to research when KB and Slack have no answer. All AI output must be verified.</span></div></div>
+<div class="sub-tabs"><button class="sub-tab s-blue active" onclick="showSub('g1','g1-flow',this)">🗺️ Flowchart</button><button class="sub-tab s-green" onclick="showSub('g1','g1-steps',this)">📋 SOP Steps</button><button class="sub-tab s-amber" onclick="showSub('g1','g1-checklist',this)">✅ Checklist</button><button class="sub-tab s-purple" onclick="showSub('g1','g1-perplexity',this)">🤖 Perplexity Guide</button><button class="sub-tab s-indigo" onclick="showSub('g1','g1-prompt',this)">💬 Prompt Template</button><button class="sub-tab s-teal" onclick="showSub('g1','g1-google',this)">🔍 Search Tips</button><button class="sub-tab s-red" onclick="showSub('g1','g1-systems',this)">🛠 Systems</button></div>
+
+<div id="g1-flow" class="sub-panel active"><section><h2>Group 1 Process Flow</h2><div class="flowchart">
+<div class="flow-row"><div class="flow-box flow-start">Step 1: Review the Ticket</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action">Step 2a: Search Knowledge Base</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">KB process found?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--green)">✓ Yes</div><div class="flow-box flow-yes">Follow KB process → Step 3</div></div><div><div class="flow-branch-label" style="color:var(--red)">✗ No</div><div class="flow-box flow-no">Continue to 2b ↓</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action">Step 2b: Search Slack channels</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">Approved process found in Slack?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--green)">✓ Yes</div><div class="flow-box flow-yes">Follow it → Step 3<br><small style="font-weight:400">Flag KB gap in #concierge-questions</small></div></div><div><div class="flow-branch-label" style="color:var(--red)">✗ No</div><div class="flow-box flow-no">Continue to 2c ↓</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box" style="background:var(--blue-mid);color:var(--blue);border:2px solid var(--blue);font-size:13px;font-weight:700;padding:11px 18px;border-radius:10px;min-width:170px;">🔬 Step 2c: Research with Perplexity AI <span class="group-only go-1">Group 1</span></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">Novel process?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--amber)">⚠️ Yes — novel</div><div class="flow-box" style="background:var(--amber-light);color:#92400e;border:1.5px solid #fbbf24;font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Post in #concierge-questions → Wait for sign-off</div></div><div><div class="flow-branch-label" style="color:var(--green)">✓ Verified</div><div class="flow-box flow-yes">Proceed to Step 3</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action">Step 3: Log all actions in internal notes</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action">Step 4: Send findings to HCP via Sunshine API</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">What happens next?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--blue)">New request</div><div class="flow-box flow-action">Flag Coordinator → new ticket</div></div><div><div class="flow-branch-label" style="color:var(--amber)">Needs follow-up</div><div class="flow-box" style="background:var(--amber-light);color:#92400e;border:1.5px solid #fbbf24;font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Keep open → update HCP + notes</div></div><div><div class="flow-branch-label" style="color:var(--green)">Complete</div><div class="flow-box flow-end">Apply closing macro → close ticket</div></div></div>
+</div></section></div>
+
+<div id="g1-steps" class="sub-panel"><section><h2>Detailed SOP Steps</h2><div class="card"><div class="steps steps-blue">
+<div class="step"><div class="step-body"><h4>Step 1 — Review the Ticket</h4><p>Read the full message thread. Understand the HCP's request and any relevant history before taking action.</p><div class="callout callout-teal"><span class="icon">💡</span><div><b>Maxima AI</b> (Zendesk app) may be used to assist with reviewing HCP history and ticket context.</div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 2a — Search the Knowledge Base <span class="group-only go-all">All Groups</span></h4><p>Search the Zendesk KB for a verified sample process for this product (brand and generic name).</p><div class="decision"><span>🔀</span><span>Process found in KB?</span></div><div class="outcome-yes"><b>Yes →</b> Follow it and proceed to Step 3.</div><div class="outcome-no"><b>No →</b> Continue to Step 2b.</div></div></div>
+<div class="step"><div class="step-body"><h4>Step 2b — Search Slack <span class="group-only go-all">All Groups</span></h4><p>Search both <code>#concierge-questions</code> and <code>#concierge-updates</code> for a previously approved process for this product.</p><div class="decision"><span>🔀</span><span>Coordinator-approved process found?</span></div><div class="outcome-yes"><b>Yes →</b> Follow it and proceed to Step 3. If the process exists in Slack but <b>not</b> in the KB, flag the gap in <code>#concierge-questions</code> so it can be added.</div><div class="outcome-no"><b>No →</b> Proceed to Step 2c (Perplexity Research).</div></div></div>
+<div class="step"><div class="step-body"><h4>Step 2c — Research with Perplexity AI <span class="group-only go-1">Group 1 Only</span></h4><p>Use the approved Perplexity prompt to research a process for this product. See the <b>Perplexity Guide</b> and <b>Prompt Template</b> tabs for full instructions.</p><div class="callout callout-red"><span class="icon">🚩</span><div><b>Verify all findings before proceeding.</b> Never send unverified information to an HCP. Only U.S. manufacturer or HCP-facing sources are acceptable. Remove all tracking parameters from URLs.</div></div><div class="callout callout-amber"><span class="icon">⚠️</span><div><b>Novel processes require Coordinator approval</b> before you reply to the HCP. Post in <code>#concierge-questions</code> and wait for sign-off.</div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 3 — Log All Actions in Internal Notes <span class="group-only go-all">All Groups</span></h4><p>Before replying to the HCP, document everything in an internal note:</p><ul><li>Emails, phone numbers, and rep names contacted</li><li>URLs, portals, or forms used</li><li>Screenshots of any submissions or confirmations</li><li>Any Coordinator approval received</li></ul><div class="callout callout-red"><span class="icon">🚩</span><div><b>Always verify you are saving to an internal note — not a public reply — before submitting.</b></div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 4 — Send Findings to the HCP <span class="group-only go-all">All Groups</span></h4><p>Send the HCP a message summarizing findings and what to expect next. Use an approved macro when available.</p><div class="callout callout-blue"><span class="icon">📨</span><div>All HCP messages must be sent via the <b>Sunshine Conversations API "send" option</b> (within the text entry box). Abide by the HCP's communication preferences as closely as possible.</div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 5 — Next Steps Based on Outcome <span class="group-only go-all">All Groups</span></h4><div class="decision"><span>🔀</span><span>What happens next?</span></div><div class="outcome-info"><b>New or different request →</b> Flag to your Coordinator for a new ticket or HCP reassignment. <b>Do not</b> work the new request on the existing ticket.</div><div class="outcome-yes"><b>Additional follow-up needed →</b> Keep the ticket open. Update both the HCP and internal notes each time the ticket status changes.</div><div class="outcome-no" style="background:var(--gray-100);border-left-color:var(--gray-500);"><b>Conversation complete →</b> Apply the closing macro or survey macro and close the ticket.<br><br><b>Closing macro:</b> use when HCP has previously received the survey.<br><b>Closing macro with survey:</b> use if the HCP has not previously received the survey.</div></div></div>
+</div></div>
+<div class="ongoing-card"><h3>📌 Ongoing Notes</h3><ul><li>If you receive new HCP information (address, phone, preferred contact method), add it to the HCP's <b>user profile</b> in Zendesk.</li><li><b>Do not send AI-generated output directly to an HCP</b> — all Perplexity findings must be verified first.</li><li>When in doubt: <b>stop and escalate to your Coordinator</b> before replying to the HCP.</li><li>Ticket status should be updated anytime there is a new action or change.</li></ul></div>
+</section></div>
+
+<div id="g1-checklist" class="sub-panel"><section><h2>Group 1 Workflow Checklist</h2><p style="font-size:14px;color:var(--gray-500);margin-bottom:18px;">Work through each section. <b>Progress saves automatically.</b></p>
+<div class="cl-banner" id="g1-banner"><div style="font-size:36px;margin-bottom:6px;">🎉</div><h3>All Steps Complete!</h3><p>Make sure ticket statuses are updated before closing out.</p></div>
+<div class="cl-header" id="g1-cl-header"><div class="cl-progress"><div class="progress-track"><div class="progress-fill pf-blue" id="g1-bar" style="width:0%"></div></div><span class="progress-text" id="g1-progress">0 / 0</span></div><button class="reset-btn" onclick="resetCL('g1')">↺ Reset</button></div>
+<div class="cl-section open" data-cl="g1"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num blue">1</div><div class="cl-sec-title">Review the Ticket</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Read the full message thread and understand the HCP's request</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Reviewed any relevant history (Maxima AI optional)</div></div></div></div></div>
+<div class="cl-section" data-cl="g1"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num blue">2</div><div class="cl-sec-title">Search KB &amp; Slack</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched Zendesk KB for verified sample process (brand + generic name)</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched <code>#concierge-questions</code> and <code>#concierge-updates</code> in Slack</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If found in Slack but not KB → flagged KB gap in <code>#concierge-questions</code></div></div><div class="cl-note blue">💡 If a verified process was found, follow it and skip to Section 4 (Logging).</div></div></div></div>
+<div class="cl-section" data-cl="g1"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num blue">3</div><div class="cl-sec-title">Perplexity Research <span class="group-only go-1">Group 1</span></div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Used approved Perplexity prompt (<code>/samples</code>) to research the product</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><b>Clicked every link</b> — confirmed they load and go to correct pages</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><b>Confirmed program exists</b> on official site — not just inferred by AI</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sources are U.S. manufacturer or HCP-facing pages only</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">URLs cleaned of all tracking parameters (<code>?utm_source</code>, etc.)</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Confirmed site is U.S. version (not .co.uk, .ca, .eu)</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If novel process → posted in <code>#concierge-questions</code> and <b>waiting for Coordinator sign-off</b></div></div><div class="cl-note red">🚩 Do NOT reply to HCP until novel processes are approved by Coordinator.</div></div></div></div>
+<div class="cl-section" data-cl="g1"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num blue">4</div><div class="cl-sec-title">Log Actions in Internal Notes</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged emails, phone numbers, and rep names contacted</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged URLs, portals, or forms used</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Attached screenshots of submissions/confirmations</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged any Coordinator approval received</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><b>Confirmed saving to INTERNAL NOTE</b> — not public reply</div></div><div class="cl-note amber">⚠️ Always double-check you are on Internal Note before submitting.</div></div></div></div>
+<div class="cl-section" data-cl="g1"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num blue">5</div><div class="cl-sec-title">Send Findings to HCP</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Used approved macro or crafted summary message</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sent via <b>Sunshine Conversations API</b> "send" option</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Followed HCP communication preferences from user profile</div></div></div></div></div>
+<div class="cl-section" data-cl="g1"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num blue">6</div><div class="cl-sec-title">Next Steps &amp; Closure</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If new/different request → flagged to Coordinator for new ticket</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If follow-up needed → ticket kept open, HCP and notes updated</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If complete → applied correct closing macro (with/without survey)</div></div><div class="cl-item" onclick="toggleCLItem(this,'g1')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Updated any new HCP info in user profile</div></div></div></div></div>
+</section></div>
+
+<div id="g1-perplexity" class="sub-panel"><section><h2>Perplexity AI — What It Is &amp; How to Use It</h2>
+<div class="card"><h3>What is Perplexity?</h3><p>Perplexity is an AI-powered search engine. Unlike ChatGPT (which generates answers from memory), Perplexity <b>actually searches the internet in real-time</b> and shows you the sources it found. Think of it like Google, but instead of giving you a list of blue links, it reads the pages for you and writes a summary with citations.</p></div>
+<div class="card"><h3>Why are we using it?</h3><p>For our use case — finding manufacturer sample programs, rep contacts, and HCP resources — Perplexity is helpful because it can search multiple sites at once and pull together information that would take several Google searches to find manually.</p></div>
+<div class="card" style="border-color:#fca5a5;"><h3 style="color:var(--red);">The Critical Rule: Always Verify</h3><p>Perplexity (and all AI tools) can and will make mistakes. It may return links that don't exist or confidently describe programs that aren't real. <b>You are responsible for verifying every piece of information before it goes to an HCP.</b></p><div class="callout callout-red"><span class="icon">🚫</span><div><b>Never copy-paste Perplexity's output directly to an HCP.</b> Always click every link, verify the process exists on the manufacturer's actual website, and complete the Final Verification Checklist before posting to Slack.</div></div></div>
+<div class="card"><h3>Getting Started (One-Time Setup)</h3><ol><li>Go to <b>perplexity.ai</b> and create a free account.</li><li>Once signed in, you'll see the search bar — this is where you'll run prompts.</li><li>Save the prompt from the <b>Prompt Template</b> tab as a Perplexity template.</li><li>To save: click <b>"Library"</b> → <b>"Prompts"</b> → <b>"Create Prompt"</b> → paste the prompt → set shortcut <code>/samples</code>.</li><li>Now anytime you need it, type <code>/samples</code> in the search bar.</li></ol></div>
+<div class="card"><h3>Running a Search</h3><ol><li>Open Perplexity and click the search bar.</li><li>Type <code>/samples</code> — your saved template will appear. Select it.</li><li>Replace <code>[drug name]</code> with the medication you're researching.</li><li>Press Enter. Perplexity will search the web and return a structured answer.</li><li>Review the answer — check each cited source by clicking the numbered references.</li><li><b>Verify every link and claim</b> before posting to Slack for approval.</li></ol></div>
+<div class="callout callout-blue"><span class="icon">💡</span><div><b>Tip:</b> If Perplexity's first answer is incomplete, ask follow-up questions in the same thread — e.g.: <em>"Can you also check for a demo trainer or device request form?"</em></div></div>
+<h2 style="margin-top:36px;">🛡️ Final Verification Checklist</h2><p style="font-size:14px;color:var(--gray-500);margin-bottom:16px;">Complete before posting to <code>#concierge-questions</code> — regardless of how you found the information.</p>
+<div class="verify-checklist"><h4>🛡️ All Items Must Pass Before Posting to Slack</h4><ul><li><b>U.S. manufacturer site:</b> Confirm the website is the U.S. version (not .co.uk, .ca, .eu). Check footer/header.</li><li><b>Forms accept U.S.:</b> Verify "United States" is available, accepts NPI, zip codes, state selections.</li><li><b>Every link works:</b> Click every URL. Does it load? Does it go where expected?</li><li><b>Program exists:</b> Confirm the sample/rep/demo program is actually described on the official site.</li><li><b>Information is current:</b> Check for copyright dates, last-updated notes, discontinuation notices.</li><li><b>All sources are official:</b> Only manufacturer websites, FDA.gov, or official HCP portals.</li><li><b>Clean URLs:</b> Remove tracking parameters (<code>?utm_source=chatgpt.com</code>, <code>?ref=</code>). Test the cleaned URL.</li></ul></div>
+</section></div>
+
+<div id="g1-prompt" class="sub-panel"><section><h2>Perplexity Prompt Template</h2><p>Copy this entire prompt and save it as a Perplexity template with the shortcut <code>/samples</code>. Replace <code>[Drug Name]</code> with the medication you're researching.</p>
+<div class="prompt-block" id="prompt-text"><button class="copy-btn" onclick="copyPrompt()">Copy</button>SYSTEM ROLE
+You are a U.S.-based pharmaceutical commercial sampling research specialist.
+The user provides only a drug name. Operate under U.S. market assumptions unless otherwise stated.
+
+Your mandate is to verify whether licensed U.S. healthcare professionals (HCPs) can obtain official manufacturer samples, demo kits/trainers, rep visits, bridge programs, phone/fax requests, or chatbot-routed access. Identify the official access pathway and confirm the responsible commercial entity.
+
+<b>PRIORITY ORDER (MANDATORY)</b>: Samples > Demo Kits > Reps > Bridge Programs > Savings Cards
+
+Prioritize accuracy over completeness. Base all conclusions only on verifiable manufacturer, HCP, or FDA sources.
+
+HCP SITE PRIORITIZATION RULE (MANDATORY OVERRIDE)
+Weigh HCP-specific website content 10x higher than patient-facing content.
+HCP site indicators: /hcp, /pro, /professional, /medical, /physician, hcp.* subdomain, or "For Healthcare Professionals" disclaimers.
+
+<b>PrescriberPoint.com Rule</b>: Treat prescriberpoint.com as a third-party aggregator. Reduce confidence by 15%. Display only in master table with asterisk.
+
+If both patient and HCP websites exist, ignore patient site entirely unless HCP version is absent.
+
+CORPORATE PORTAL HEURISTIC (CRITICAL OVERRIDE)
+MANDATORY portals to check: MerckSamplePortal, MySampleCloset, KenvuePro, PfizerPro, NovoMedLink, AbbViePro, LillyTrade, AZMedical, JanssenPro, BauschHealth, Intra-Cellular, bdf.hcpsampling.com.
+
+<b>PHASE 0 - DRUG TYPE CLASSIFICATION (MANDATORY)</b>
+1. Run: "[Drug] generic OR OTC OR over counter OR brand name"
+2. If OTC: Proceed normally
+3. If Generic: Flag ALL pathways with "Generic, sampling programs may have ended"
+
+<b>PHASE 1A - SPECIALTY DETECTION (MANDATORY)</b>
+1. "[Drug] indications FDA"
+2. Extract all U.S. FDA-approved indications
+3. Generate specialty-specific queries (Derm, GI, Rheum, Onc)
+4. Run 1-2 top queries per specialty (max 3 total)
+
+<b>PHASE 1 - EXPANDED EVIDENCE SEARCH</b>
+Run these searches (quotation marks mandatory):
+"[Drug] HCP sample request"
+"[Drug] demo trainer HCP"
+"[Drug] request rep HCP"
+"[Drug] phone samples HCP"
+"[Drug] fax samples request"
+"[Drug] chatbot rep samples"
+"[Drug] MySampleCloset OR mysamplecloset.com"
+"[Drug] request trainer device"
+"[Manufacturer] HCP phone number"
+"[Drug] FDA label PDF"
+"[Drug] distributed by"
+
+<b>PHASE 1B - SITEMAP SCAN (MANDATORY)</b>
+Run: "[Drug] HCP site-map" OR "[Drug] HCP sitemap"
+Flag ALL paths matching: /contact-a-rep, /request-samples, /hcp/trainer, etc.
+
+<b>PHASE 2 - HCP PORTAL DEEP SCAN</b>
+Visit corporate portals + drug HCP sites. Navigate PER SPECIALTY.
+Extract: Phone/fax numbers, chatbot domains, demo trainer forms, bridge programs.
+
+<b>PHASE 3 - GRADING</b>
+Grade A: Direct sample/demo trainer ordering
+Grade B: Phone/fax requests, chatbots, bridge programs
+Grade C: Rep request forms mentioning samples
+Grade D: Rep request forms only
+Grade E: No evidence found
+
+<b>PHASE 4 - Extract Verifiable Facts</b>
+Record: Portal URLs, phone/fax numbers, chatbot domains, demo trainer links, bridge eligibility, sample limits.
+
+<b>PHASE 5 - Confidence Scoring</b>
+Start 100% then deductions: login barriers (-15%), phone-only (-10%), rep dependency (-20%).
+
+<b>PHASE 6 - MASTER OUTPUT TABLE</b>
+| Pathway Rank | Type | Company | Link/Phone | Steps | What's Offered | Grade | Confidence |
+
+<b>FINAL DETERMINATION</b>
+Result: ✅ Confirmed / ❌ No program found / ⚠️ Insufficient evidence
+
+LINKING RULES: All links must begin with https://. Accept only manufacturer/HCP domains. Cross-check WHOIS/footer branding.
+
+INFERENCE PROHIBITION: Never infer from competitors/analogs. Confirm only explicit manufacturer/HCP sources.</div>
+</section></div>
+
+<div id="g1-google" class="sub-panel"><section><h2>Search Tips — Finding HCP Sites</h2>
+<div class="card"><h3>Recommended Search Queries</h3><p>Replace <code>[Drug]</code> with the medication name.</p><div class="table-wrap"><table><thead><tr><th>Looking For</th><th>Search Query</th></tr></thead><tbody><tr><td>HCP website</td><td><code>[Drug] HCP site</code> or <code>[Drug] for healthcare professionals</code></td></tr><tr><td>Manufacturer</td><td><code>[Drug] manufacturer</code></td></tr><tr><td>Generic availability</td><td><code>[Drug] generic available</code></td></tr><tr><td>Demo/trainer device</td><td><code>[Drug] demo trainer device HCP</code></td></tr></tbody></table></div></div>
+<div class="card"><h3>How to Identify the HCP Version</h3><ul><li><b>URL clues:</b> <code>/hcp</code>, <code>/pro</code>, <code>/professional</code>, <code>/medical</code>, or subdomains like <code>hcp.drugname.com</code></li><li><b>Site toggle:</b> Look for "For Healthcare Professionals" link in the header</li><li><b>Confirmation gate:</b> HCP sites often ask you to confirm you're a licensed professional</li></ul></div>
+<div class="card" style="border-color:#fca5a5;"><h3>🇺🇸 Confirming It's a U.S. Site</h3><ul><li><b>Check URL:</b> Avoid .co.uk, .ca, .eu, .com.au</li><li><b>Check footer:</b> Look for "United States" in country selector</li><li><b>Check header:</b> Country/region selector set to U.S.</li><li><b>Check forms:</b> Accepts U.S. NPI, state, zip codes</li></ul></div>
+<div class="card"><h3>What to Look For on the HCP Site</h3><ul><li><b>Resources / Support:</b> Sample request forms, starter kits, bridge programs</li><li><b>Contact / Request a Rep:</b> Forms to request a sales representative visit</li><li><b>Getting Started:</b> Often contains sample info, onboarding materials</li><li><b>Footer links:</b> Phone numbers for medical information (800 numbers)</li></ul></div>
+<div class="callout callout-green"><span class="icon">✅</span><div><b>Trust only official manufacturer domains.</b> If you find info on a third-party site, go to the manufacturer's actual website to confirm.</div></div>
+</section></div>
+
+
+
+<div id="g1-systems" class="sub-panel"><section><h2>Roles &amp; Systems</h2>
+<div class="card"><h3>Roles</h3><div class="table-wrap"><table><thead><tr><th>Role</th><th>Responsibility</th></tr></thead><tbody><tr><td><b>Group 1 CSR</b></td><td>Research focus — full lookup order including Perplexity AI</td></tr><tr><td><b>Group 2 CSR</b></td><td>Process focus — KB and Slack, escalate when nothing found</td></tr><tr><td><b>Group 3 CSR</b></td><td>Portal focus — sends portal links</td></tr><tr><td><b>HCP Coordinator</b></td><td>Escalation approvals and novel process sign-off</td></tr></tbody></table></div></div>
+<div class="card"><h3>Systems</h3><div class="table-wrap"><table><thead><tr><th>System</th><th>Purpose</th></tr></thead><tbody><tr><td><span class="sys-pill sp-zendesk">Zendesk</span></td><td>Ticket management, HCP communication, internal documentation</td></tr><tr><td><span class="sys-pill sp-kb">Knowledge Base</span></td><td>Verified processes for known products</td></tr><tr><td><span class="sys-pill sp-slack">#concierge-questions</span></td><td>Questions &amp; escalations for Coordinator assistance</td></tr><tr><td><span class="sys-pill sp-slack">#concierge-updates</span></td><td>Process updates and announcements</td></tr><tr><td><span class="sys-pill sp-perplexity">Perplexity AI</span></td><td>Research tool — all output must be verified</td></tr><tr><td><span class="sys-pill sp-macros">Macros</span></td><td>Approved message templates in Zendesk</td></tr><tr><td><span class="sys-pill sp-maxima">Maxima AI</span></td><td>Optional: review HCP history, message assistance</td></tr></tbody></table></div></div>
+<div class="callout callout-blue"><span class="icon">📌</span><div>Each request uses a <b>single ticket</b> housing both HCP-facing communication and internal notes. Use <b>internal notes</b> for documentation; use <b>Sunshine Conversations API</b> for HCP messages.</div></div>
+</section></div>
+</div>
+
+<!-- GROUP 2 -->
+<div id="g2" class="group-panel">
+<div class="group-banner gb-2"><span class="gb-icon">⚙️</span><div><b>Group 2 — Process Focus</b><span class="gb-desc"> · Handles in-depth processes using KB and Slack. If nothing found, escalate to Coordinator.</span></div></div>
+<div class="sub-tabs"><button class="sub-tab s-teal active" onclick="showSub('g2','g2-flow',this)">🗺️ Flowchart</button><button class="sub-tab s-green" onclick="showSub('g2','g2-steps',this)">📋 SOP Steps</button><button class="sub-tab s-amber" onclick="showSub('g2','g2-checklist',this)">✅ Checklist</button><button class="sub-tab s-red" onclick="showSub('g2','g2-systems',this)">🛠 Systems</button></div>
+
+<div id="g2-flow" class="sub-panel active"><section><h2>Group 2 Process Flow</h2><div class="flowchart">
+<div class="flow-row"><div class="flow-box flow-start-teal">Step 1: Review the Ticket</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-teal">Step 2a: Search Knowledge Base</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">KB process found?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--green)">✓ Yes</div><div class="flow-box flow-yes">Follow KB process → Step 3</div></div><div><div class="flow-branch-label" style="color:var(--red)">✗ No</div><div class="flow-box flow-no">Continue to 2b ↓</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-teal">Step 2b: Search Slack channels</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">Approved process found?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--green)">✓ Yes</div><div class="flow-box flow-yes">Follow it → Step 3<br><small style="font-weight:400">Flag KB gap if needed</small></div></div><div><div class="flow-branch-label" style="color:var(--amber)">✗ No</div><div class="flow-box" style="background:var(--amber-light);color:#92400e;border:2px solid #fbbf24;font-size:13px;font-weight:700;padding:11px 18px;border-radius:10px;min-width:170px;">⚠️ Escalate to Coordinator</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-teal">Step 3: Log all actions in internal notes</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-teal">Step 4: Send findings to HCP</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">What happens next?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--blue)">New request</div><div class="flow-box flow-action-teal">Flag Coordinator → new ticket</div></div><div><div class="flow-branch-label" style="color:var(--amber)">Follow-up</div><div class="flow-box" style="background:var(--amber-light);color:#92400e;border:1.5px solid #fbbf24;font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Keep open → update HCP + notes</div></div><div><div class="flow-branch-label" style="color:var(--green)">Complete</div><div class="flow-box flow-end">Apply closing macro → close</div></div></div>
+</div></section></div>
+
+<div id="g2-steps" class="sub-panel"><section><h2>Detailed SOP Steps</h2><div class="card"><div class="steps steps-teal">
+<div class="step"><div class="step-body"><h4>Step 1 — Review the Ticket</h4><p>Read the full message thread. Understand the HCP's request and history. Maxima AI optional.</p></div></div>
+<div class="step"><div class="step-body"><h4>Step 2a — Search the Knowledge Base</h4><p>Search Zendesk KB for a verified sample process (brand and generic name).</p><div class="decision"><span>🔀</span><span>Process found?</span></div><div class="outcome-yes"><b>Yes →</b> Follow it → Step 3.</div><div class="outcome-no"><b>No →</b> Continue to Step 2b.</div></div></div>
+<div class="step"><div class="step-body"><h4>Step 2b — Search Slack</h4><p>Search <code>#concierge-questions</code> and <code>#concierge-updates</code> for an approved process.</p><div class="decision"><span>🔀</span><span>Approved process found?</span></div><div class="outcome-yes"><b>Yes →</b> Follow it. Flag KB gap if not in KB.</div><div class="outcome-no"><b>Nothing found →</b> Escalate to Coordinator in <code>#concierge-questions</code>.</div><div class="callout callout-amber"><span class="icon">⚠️</span><div><b>Group 2 does not use Perplexity AI.</b> If nothing found, wait for Coordinator direction.</div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 3 — Log All Actions in Internal Notes</h4><p>Document everything in an internal note before replying.</p><div class="callout callout-red"><span class="icon">🚩</span><div><b>Verify you are saving to an internal note — not a public reply.</b></div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 4 — Send Findings to the HCP</h4><p>Send via Sunshine Conversations API. Use approved macro when available. Follow HCP preferences.</p></div></div>
+<div class="step"><div class="step-body"><h4>Step 5 — Next Steps</h4><div class="decision"><span>🔀</span><span>What happens next?</span></div><div class="outcome-info"><b>New request →</b> Flag Coordinator for new ticket.</div><div class="outcome-yes"><b>Follow-up →</b> Keep open. Update HCP and notes.</div><div class="outcome-no" style="background:var(--gray-100);border-left-color:var(--gray-500);"><b>Complete →</b> Apply closing macro and close.</div></div></div>
+</div></div><div class="ongoing-card"><h3>📌 Ongoing Notes</h3><ul><li>Update HCP user profile with any new info.</li><li>When in doubt: <b>stop and escalate</b>.</li><li>Update ticket status with every action.</li></ul></div></section></div>
+
+<div id="g2-checklist" class="sub-panel"><section><h2>Group 2 Workflow Checklist</h2><p style="font-size:14px;color:var(--gray-500);margin-bottom:18px;"><b>Progress saves automatically.</b></p>
+<div class="cl-banner" id="g2-banner"><div style="font-size:36px;margin-bottom:6px;">🎉</div><h3>All Steps Complete!</h3><p>Make sure ticket statuses are updated.</p></div>
+<div class="cl-header" id="g2-cl-header"><div class="cl-progress"><div class="progress-track"><div class="progress-fill pf-teal" id="g2-bar" style="width:0%"></div></div><span class="progress-text" id="g2-progress">0 / 0</span></div><button class="reset-btn" onclick="resetCL('g2')">↺ Reset</button></div>
+<div class="cl-section open" data-cl="g2"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num teal">1</div><div class="cl-sec-title">Review the Ticket</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Read the full message thread</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Reviewed relevant history</div></div></div></div></div>
+<div class="cl-section" data-cl="g2"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num teal">2</div><div class="cl-sec-title">Search KB &amp; Slack</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched Zendesk KB (brand + generic)</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched <code>#concierge-questions</code> and <code>#concierge-updates</code></div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If found in Slack but not KB → flagged KB gap</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If nothing found → escalated to Coordinator</div></div><div class="cl-note teal">💡 Group 2 does not use Perplexity. Wait for Coordinator direction if nothing found.</div></div></div></div>
+<div class="cl-section" data-cl="g2"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num teal">3</div><div class="cl-sec-title">Log Actions</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged all contacts, URLs, forms, screenshots</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged Coordinator approval</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><b>Confirmed INTERNAL NOTE</b> — not public reply</div></div></div></div></div>
+<div class="cl-section" data-cl="g2"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num teal">4</div><div class="cl-sec-title">Send Findings to HCP</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Used approved macro or summary message</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sent via Sunshine Conversations API</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Followed HCP preferences</div></div></div></div></div>
+<div class="cl-section" data-cl="g2"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num teal">5</div><div class="cl-sec-title">Next Steps &amp; Closure</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">New request → flagged Coordinator</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Follow-up → ticket open, updates sent</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Complete → closing macro applied</div></div><div class="cl-item" onclick="toggleCLItem(this,'g2')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Updated HCP profile</div></div></div></div></div>
+</section></div>
+
+<div id="g2-systems" class="sub-panel"><section><h2>Roles &amp; Systems</h2>
+<div class="card"><h3>Systems Available to Group 2</h3><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"><span class="sys-pill sp-zendesk">Zendesk</span><span class="sys-pill sp-kb">Knowledge Base</span><span class="sys-pill sp-slack">#concierge-questions</span><span class="sys-pill sp-slack">#concierge-updates</span><span class="sys-pill sp-macros">Macros</span><span class="sys-pill sp-maxima">Maxima AI (optional)</span></div><div class="callout callout-amber" style="margin-top:16px;"><span class="icon">⚠️</span><div><b>Perplexity AI is not available to Group 2.</b> Escalate to Coordinator if KB and Slack return nothing.</div></div></div>
+</section></div>
+</div>
+
+<!-- GROUP 3 -->
+<div id="g3" class="group-panel">
+<div class="group-banner gb-3"><span class="gb-icon">🔗</span><div><b>Group 3 — Portal Focus</b><span class="gb-desc"> · Sends verified portal links. If no KB or Slack process, escalate to Coordinator.</span></div></div>
+<div class="sub-tabs"><button class="sub-tab s-purple active" onclick="showSub('g3','g3-flow',this)">🗺️ Flowchart</button><button class="sub-tab s-green" onclick="showSub('g3','g3-steps',this)">📋 SOP Steps</button><button class="sub-tab s-amber" onclick="showSub('g3','g3-checklist',this)">✅ Checklist</button><button class="sub-tab s-red" onclick="showSub('g3','g3-systems',this)">🛠 Systems</button></div>
+
+<div id="g3-flow" class="sub-panel active"><section><h2>Group 3 Process Flow</h2><div class="flowchart">
+<div class="flow-row"><div class="flow-box flow-start-purple">Step 1: Review the Ticket</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-purple">Step 2a: Search Knowledge Base</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">KB process found?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--green)">✓ Yes</div><div class="flow-box flow-yes">Send portal link → Step 3</div></div><div><div class="flow-branch-label" style="color:var(--red)">✗ No</div><div class="flow-box flow-no">Continue to 2b ↓</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-purple">Step 2b: Search Slack channels</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">Approved process found?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--green)">✓ Yes</div><div class="flow-box flow-yes">Send portal link → Step 3<br><small style="font-weight:400">Flag KB gap if needed</small></div></div><div><div class="flow-branch-label" style="color:var(--amber)">✗ No</div><div class="flow-box" style="background:var(--amber-light);color:#92400e;border:2px solid #fbbf24;font-size:13px;font-weight:700;padding:11px 18px;border-radius:10px;min-width:170px;">⚠️ Escalate to Coordinator</div></div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-purple">Step 3: Log actions in internal notes</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-action-purple">Step 4: Send portal link to HCP</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-row"><div class="flow-box flow-decision">What happens next?</div></div><div class="flow-arrow-down">↓</div>
+<div class="flow-branch"><div><div class="flow-branch-label" style="color:var(--blue)">New request</div><div class="flow-box flow-action-purple">Flag Coordinator</div></div><div><div class="flow-branch-label" style="color:var(--amber)">Follow-up</div><div class="flow-box" style="background:var(--amber-light);color:#92400e;border:1.5px solid #fbbf24;font-size:13px;font-weight:600;padding:11px 18px;border-radius:10px;min-width:170px;">Keep open → update</div></div><div><div class="flow-branch-label" style="color:var(--green)">Complete</div><div class="flow-box flow-end">Close ticket</div></div></div>
+</div></section></div>
+
+<div id="g3-steps" class="sub-panel"><section><h2>Detailed SOP Steps</h2><div class="card"><div class="steps steps-purple">
+<div class="step"><div class="step-body"><h4>Step 1 — Review the Ticket</h4><p>Read the full thread. Understand the request. Maxima AI optional.</p></div></div>
+<div class="step"><div class="step-body"><h4>Step 2a — Search the Knowledge Base</h4><p>Search for a verified portal link/process.</p><div class="decision"><span>🔀</span><span>Found?</span></div><div class="outcome-yes"><b>Yes →</b> Send portal link → Step 3.</div><div class="outcome-no"><b>No →</b> Step 2b.</div></div></div>
+<div class="step"><div class="step-body"><h4>Step 2b — Search Slack</h4><p>Search <code>#concierge-questions</code> and <code>#concierge-updates</code>.</p><div class="decision"><span>🔀</span><span>Approved process found?</span></div><div class="outcome-yes"><b>Yes →</b> Follow it. Flag KB gap if needed.</div><div class="outcome-no"><b>Nothing →</b> Escalate to Coordinator.</div><div class="callout callout-purple"><span class="icon">🔗</span><div><b>Group 3 does not use Perplexity or conduct independent research.</b> Send verified portal links. If no process exists, escalate.</div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 3 — Log Actions</h4><p>Document portal links, Coordinator guidance, screenshots in internal note.</p><div class="callout callout-red"><span class="icon">🚩</span><div><b>Verify you are on Internal Note before submitting.</b></div></div></div></div>
+<div class="step"><div class="step-body"><h4>Step 4 — Send Portal Link to HCP</h4><p>Send via Sunshine Conversations API. Use macro when available. Follow HCP preferences.</p></div></div>
+<div class="step"><div class="step-body"><h4>Step 5 — Next Steps</h4><div class="decision"><span>🔀</span><span>What happens next?</span></div><div class="outcome-info"><b>New request →</b> Flag Coordinator.</div><div class="outcome-yes"><b>Follow-up →</b> Keep open.</div><div class="outcome-no" style="background:var(--gray-100);border-left-color:var(--gray-500);"><b>Complete →</b> Closing macro → close.</div></div></div>
+</div></div><div class="ongoing-card"><h3>📌 Ongoing Notes</h3><ul><li>Update HCP profile with new info.</li><li>When in doubt: <b>escalate</b>.</li><li>Update ticket status with every action.</li></ul></div></section></div>
+
+<div id="g3-checklist" class="sub-panel"><section><h2>Group 3 Workflow Checklist</h2><p style="font-size:14px;color:var(--gray-500);margin-bottom:18px;"><b>Progress saves automatically.</b></p>
+<div class="cl-banner" id="g3-banner"><div style="font-size:36px;margin-bottom:6px;">🎉</div><h3>All Steps Complete!</h3><p>Make sure ticket statuses are updated.</p></div>
+<div class="cl-header" id="g3-cl-header"><div class="cl-progress"><div class="progress-track"><div class="progress-fill pf-purple" id="g3-bar" style="width:0%"></div></div><span class="progress-text" id="g3-progress">0 / 0</span></div><button class="reset-btn" onclick="resetCL('g3')">↺ Reset</button></div>
+<div class="cl-section open" data-cl="g3"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num purple">1</div><div class="cl-sec-title">Review the Ticket</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Read the full message thread</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Reviewed relevant history</div></div></div></div></div>
+<div class="cl-section" data-cl="g3"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num purple">2</div><div class="cl-sec-title">Search KB &amp; Slack</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched KB for verified portal/process</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Searched Slack channels</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Flagged KB gap if needed</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">If nothing found → escalated</div></div><div class="cl-note purple">🔗 Group 3 does not use Perplexity. Escalate if no process found.</div></div></div></div>
+<div class="cl-section" data-cl="g3"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num purple">3</div><div class="cl-sec-title">Log Actions</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Logged portal links and guidance</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Attached screenshots</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text"><b>Confirmed INTERNAL NOTE</b></div></div></div></div></div>
+<div class="cl-section" data-cl="g3"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num purple">4</div><div class="cl-sec-title">Send Portal Link</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Used macro or summary with portal link</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Sent via Sunshine API</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Followed HCP preferences</div></div></div></div></div>
+<div class="cl-section" data-cl="g3"><div class="cl-sec-header" onclick="toggleCLSection(this)"><div class="cl-num purple">5</div><div class="cl-sec-title">Next Steps &amp; Closure</div><span class="cl-badge cl-pending">Not started</span><span class="chevron">▾</span></div><div class="cl-body"><div class="cl-inner"><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">New request → flagged Coordinator</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Follow-up → ticket open, updates sent</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Complete → closing macro applied</div></div><div class="cl-item" onclick="toggleCLItem(this,'g3')"><div class="cl-checkbox">✓</div><div class="cl-item-text">Updated HCP profile</div></div></div></div></div>
+</section></div>
+
+<div id="g3-systems" class="sub-panel"><section><h2>Roles &amp; Systems</h2>
+<div class="card"><h3>Systems Available to Group 3</h3><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"><span class="sys-pill sp-zendesk">Zendesk</span><span class="sys-pill sp-kb">Knowledge Base</span><span class="sys-pill sp-slack">#concierge-questions</span><span class="sys-pill sp-slack">#concierge-updates</span><span class="sys-pill sp-macros">Macros</span><span class="sys-pill sp-maxima">Maxima AI (optional)</span></div><div class="callout callout-purple" style="margin-top:16px;"><span class="icon">🔗</span><div><b>Perplexity AI is not available to Group 3.</b> Send verified portal links from existing processes. Escalate if nothing exists.</div></div></div>
+</section></div>
+</div>
+
+</div>
+<script>
+function showGroup(n,btn){document.querySelectorAll('.group-panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.group-tab').forEach(function(b){b.classList.remove('active')});document.getElementById('g'+n).classList.add('active');btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function showSub(gId,panelId,btn){var p=document.getElementById(gId);p.querySelectorAll('.sub-panel').forEach(function(s){s.classList.remove('active')});p.querySelectorAll('.sub-tab').forEach(function(b){b.classList.remove('active')});document.getElementById(panelId).classList.add('active');btn.classList.add('active')}
+function toggleCLSection(h){h.closest('.cl-section').classList.toggle('open')}
+function toggleCLItem(item,clId){item.classList.toggle('checked');updateCLProgress(clId);saveCL(clId)}
+function updateCLProgress(clId){var all=document.querySelectorAll('[data-cl="'+clId+'"] .cl-item'),checked=document.querySelectorAll('[data-cl="'+clId+'"] .cl-item.checked'),total=all.length,done=checked.length,pct=total?Math.round(done/total*100):0,bar=document.getElementById(clId+'-bar'),txt=document.getElementById(clId+'-progress'),hdr=document.getElementById(clId+'-cl-header'),banner=document.getElementById(clId+'-banner'),cc=clId==='g1'?'state-progress-blue':clId==='g2'?'state-progress-teal':'state-progress-purple';bar.style.width=pct+'%';txt.textContent=done+' / '+total;hdr.classList.remove('state-progress-blue','state-progress-teal','state-progress-purple','state-complete');if(pct===100){bar.classList.add('complete');txt.classList.add('complete');banner.classList.add('show');hdr.classList.add('state-complete')}else if(done>0){bar.classList.remove('complete');txt.classList.remove('complete');banner.classList.remove('show');hdr.classList.add(cc)}else{bar.classList.remove('complete');txt.classList.remove('complete');banner.classList.remove('show')}document.querySelectorAll('[data-cl="'+clId+'"]').forEach(function(sec){var items=sec.querySelectorAll('.cl-item'),ci=sec.querySelectorAll('.cl-item.checked'),badge=sec.querySelector('.cl-badge'),num=sec.querySelector('.cl-num');if(!items.length)return;if(ci.length===0){badge.className='cl-badge cl-pending';badge.textContent='Not started';if(num)num.classList.remove('done')}else if(ci.length===items.length){badge.className='cl-badge cl-done';badge.textContent='Complete';if(num)num.classList.add('done')}else{badge.className='cl-badge cl-partial';badge.textContent=ci.length+'/'+items.length;if(num)num.classList.remove('done')}})}
+function resetCL(clId){if(!confirm('Reset all checklist progress for this group?'))return;document.querySelectorAll('[data-cl="'+clId+'"] .cl-item.checked').forEach(function(i){i.classList.remove('checked')});updateCLProgress(clId);saveCL(clId)}
+function saveCL(clId){try{var items=document.querySelectorAll('[data-cl="'+clId+'"] .cl-item'),state=[];items.forEach(function(item){state.push(item.classList.contains('checked'))});localStorage.setItem('v3sop_'+clId,JSON.stringify(state))}catch(e){}}
+function loadCL(clId){try{var saved=localStorage.getItem('v3sop_'+clId);if(!saved)return;var state=JSON.parse(saved),items=document.querySelectorAll('[data-cl="'+clId+'"] .cl-item');items.forEach(function(item,i){if(state[i])item.classList.add('checked')})}catch(e){}}
+function copyPrompt(){var el=document.getElementById('prompt-text'),btn=el.querySelector('.copy-btn'),t=el.textContent.replace(btn.textContent,'').trim();navigator.clipboard.writeText(t).then(function(){btn.textContent='Copied!';btn.style.background='#16a34a';setTimeout(function(){btn.textContent='Copy';btn.style.background=''},2000)})}
+function copySlack(){var el=document.getElementById('slack-template');navigator.clipboard.writeText(el.textContent.trim()).then(function(){var btn=event.target;btn.textContent='Copied!';btn.style.background='#16a34a';setTimeout(function(){btn.textContent='Copy Template';btn.style.background=''},2000)})}
+function copySlackKB(){var el=document.getElementById('slack-template-kb');navigator.clipboard.writeText(el.textContent.trim()).then(function(){var btn=event.target;btn.textContent='Copied!';btn.style.background='#16a34a';setTimeout(function(){btn.textContent='Copy Template';btn.style.background=''},2000)})}
+['g1','g2','g3'].forEach(function(id){loadCL(id);updateCLProgress(id)});
+</script>
+</body>
+</html>
